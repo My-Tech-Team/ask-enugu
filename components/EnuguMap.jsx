@@ -1,13 +1,20 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { PROJECTS, ENUGU_CENTER } from "@/data/enugu-data";
+import { LGAS, PROJECTS } from "@/data/enugu-data";
+
+// Enugu State Bounding Box covering all 17 LGAs from Igbo-Eze North to Awgu/Aninri
+const ENUGU_FIT_BOUNDS = [
+  [7.02, 5.92], // Southwest: Awgu / Aninri / Uzo-Uwani south
+  [7.85, 7.12], // Northeast: Igbo-Eze North / Isi-Uzo
+];
 
 export default function EnuguMap({ onSelectProjectForQuery }) {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef([]);
-  const [activeProject, setActiveProject] = useState(null);
+  const [selectedLga, setSelectedLga] = useState(null);
+  const [activeCommunity, setActiveCommunity] = useState(null);
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
@@ -24,73 +31,20 @@ export default function EnuguMap({ onSelectProjectForQuery }) {
 
       if (mapInstanceRef.current) return;
 
-      // Clean light style that fits beautifully into a white background layout
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/light-v11",
-        center: ENUGU_CENTER,
-        zoom: 8.8,
-        minZoom: 8.0,
-        maxZoom: 15,
-        maxBounds: [
-          [6.60, 5.75], // Southwest limit
-          [8.20, 7.35], // Northeast limit
-        ],
+        bounds: ENUGU_FIT_BOUNDS,
+        fitBoundsOptions: { padding: 25 },
         attributionControl: false,
       });
-
-      map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "bottom-right");
 
       map.on("load", () => {
         if (!isCancelled) {
           setMapLoaded(true);
           mapInstanceRef.current = map;
-          renderPins(map);
+          renderAllLgaPins(map);
         }
-      });
-    };
-
-    const renderPins = (map) => {
-      const mapboxgl = window.mapboxgl;
-      if (!mapboxgl) return;
-
-      PROJECTS.forEach((project) => {
-        const el = document.createElement("div");
-        el.className = "group cursor-pointer transform transition-transform hover:scale-125 duration-200";
-
-        const isCompleted = project.status === "Completed";
-        const pinBg = isCompleted ? "#068237" : "#E8A812";
-
-        el.innerHTML = `
-          <div style="background-color: ${pinBg}; box-shadow: 0 4px 14px rgba(0,0,0,0.25);"
-               class="w-7 h-7 rounded-full flex items-center justify-center text-white border-2 border-white shadow-md">
-            <span class="text-[11px] leading-none">${
-              project.category === "Education"
-                ? "🏫"
-                : project.category === "Healthcare"
-                ? "🏥"
-                : project.category === "Water & Utilities"
-                ? "💧"
-                : "🏗️"
-            }</span>
-          </div>
-        `;
-
-        el.addEventListener("click", (e) => {
-          e.stopPropagation();
-          setActiveProject(project);
-          map.flyTo({
-            center: project.coordinates,
-            zoom: 12.5,
-            duration: 1000,
-          });
-        });
-
-        const marker = new mapboxgl.Marker(el)
-          .setLngLat(project.coordinates)
-          .addTo(map);
-
-        markersRef.current.push(marker);
       });
     };
 
@@ -115,94 +69,226 @@ export default function EnuguMap({ onSelectProjectForQuery }) {
     };
   }, []);
 
-  const handleResetMap = () => {
-    setActiveProject(null);
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.flyTo({
-        center: ENUGU_CENTER,
-        zoom: 8.8,
-        duration: 900,
+  // LEVEL 1: RENDER ALL 17 LOCAL GOVERNMENT AREAS
+  const renderAllLgaPins = (map) => {
+    const mapboxgl = window.mapboxgl;
+    if (!mapboxgl) return;
+
+    // Clear previous markers
+    markersRef.current.forEach((m) => m.remove());
+    markersRef.current = [];
+
+    LGAS.forEach((lga) => {
+      const el = document.createElement("div");
+      el.className = "flex flex-col items-center cursor-pointer group";
+
+      el.innerHTML = `
+        <!-- Circular LGA Pin -->
+        <div class="relative flex items-center justify-center">
+          <span class="absolute w-4 h-4 rounded-full bg-[#068237] opacity-25 group-hover:scale-150 transition-transform"></span>
+          <div style="background-color: #068237; box-shadow: 0 1px 5px rgba(6,130,55,0.4);"
+               class="w-3.5 h-3.5 rounded-full border border-white flex items-center justify-center transform transition-transform group-hover:scale-125">
+            <span class="w-1 h-1 rounded-full bg-[#E8A812]"></span>
+          </div>
+        </div>
+
+        <!-- Clean Label -->
+        <span style="text-shadow: 0 0 4px #ffffff, 0 0 6px #ffffff, 0 1px 2px #ffffff;"
+              class="text-[9px] sm:text-[10px] font-extrabold text-[#082C20] whitespace-nowrap tracking-tight select-none group-hover:text-[#068237] transition-colors mt-0.5">
+          ${lga.name}
+        </span>
+      `;
+
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        handleLgaClick(lga);
       });
-    }
+
+      const marker = new mapboxgl.Marker({
+        element: el,
+        anchor: "center",
+      })
+        .setLngLat(lga.center)
+        .addTo(map);
+
+      markersRef.current.push(marker);
+    });
+  };
+
+  // LEVEL 2: DRILL-DOWN INTO CLICKED LGA -> SHOW ITS COMMUNITIES ONLY
+  const handleLgaClick = (lga) => {
+    setSelectedLga(lga);
+    setActiveCommunity(null);
+
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    // Zoom and isolate that LGA
+    map.flyTo({
+      center: lga.center,
+      zoom: lga.zoom || 12.2,
+      duration: 1000,
+      essential: true,
+    });
+
+    renderCommunityPins(map, lga);
+  };
+
+  const renderCommunityPins = (map, lga) => {
+    const mapboxgl = window.mapboxgl;
+    if (!mapboxgl) return;
+
+    // Clear all previous markers (hides the other 16 LGAs)
+    markersRef.current.forEach((m) => m.remove());
+    markersRef.current = [];
+
+    const communities = lga.communities || [];
+
+    communities.forEach((comm) => {
+      const el = document.createElement("div");
+      el.className = "flex flex-col items-center cursor-pointer group";
+
+      el.innerHTML = `
+        <!-- Community Point Icon -->
+        <div class="relative flex items-center justify-center">
+          <div style="background-color: #E8A812; box-shadow: 0 2px 8px rgba(232,168,18,0.5);"
+               class="w-4 h-4 rounded-full border-2 border-white flex items-center justify-center transform transition-transform group-hover:scale-125">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#082C20]"></span>
+          </div>
+        </div>
+
+        <!-- Community Name Badge -->
+        <span style="text-shadow: 0 0 4px #ffffff, 0 0 8px #ffffff;"
+              class="text-[10px] font-bold text-[#082C20] bg-white/90 backdrop-blur-xs px-1.5 py-0.2 rounded-md shadow-xs border border-gray-200 whitespace-nowrap mt-0.5 group-hover:border-[#068237] transition">
+          ${comm.name}
+        </span>
+      `;
+
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        setActiveCommunity(comm);
+        map.flyTo({
+          center: comm.coords,
+          zoom: 13.5,
+          duration: 600,
+        });
+      });
+
+      const marker = new mapboxgl.Marker({
+        element: el,
+        anchor: "center",
+      })
+        .setLngLat(comm.coords)
+        .addTo(map);
+
+      markersRef.current.push(marker);
+    });
+  };
+
+  // RETURN BACK TO FULL STATE VIEW (ALL 17 LGAs)
+  const handleResetToAllLgas = () => {
+    setSelectedLga(null);
+    setActiveCommunity(null);
+
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    map.fitBounds(ENUGU_FIT_BOUNDS, {
+      padding: 25,
+      duration: 1000,
+    });
+
+    renderAllLgaPins(map);
   };
 
   return (
-    <div className="relative w-full">
-      {/* Curved Social Media Profile Header Cover Banner */}
-      <div className="relative w-full h-[280px] sm:h-[340px] md:h-[400px] overflow-hidden cover-curve shadow-md border-b border-gray-100 bg-[#E8F5E9]/40">
+    <div className="relative w-full max-w-3xl mx-auto">
+      {/* Frosted Glass Map Container */}
+      <div className="relative w-full h-[280px] sm:h-[320px] rounded-3xl overflow-hidden shadow-xl border border-white/60 bg-white/30 backdrop-blur-md transition-all duration-300">
         {/* Mapbox Canvas */}
-        <div ref={mapContainerRef} className="w-full h-full" />
+        <div
+          ref={mapContainerRef}
+          className="w-full h-full opacity-85 hover:opacity-95 transition-opacity duration-300"
+        />
 
-        {/* Subtle Gradient Overlays for smooth blend */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/25 via-transparent to-white/40" />
+        {/* Top Control Bar */}
+        <div className="absolute top-3 left-4 right-4 z-10 flex items-center justify-between pointer-events-none">
+          {/* Status Badge */}
+          <div className="pointer-events-auto flex items-center gap-1.5 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full shadow-xs border border-white/70">
+            <span className="flex h-1.5 w-1.5 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#068237] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#068237]"></span>
+            </span>
+            <span className="text-[10px] font-semibold text-[#082C20]">
+              {selectedLga
+                ? `${selectedLga.name} Communities (${selectedLga.communities?.length || 0})`
+                : "All 17 Local Government Areas"}
+            </span>
+          </div>
 
-        {/* Top Floating Badge on Cover */}
-        <div className="absolute top-4 left-4 sm:left-8 z-10 flex items-center gap-2 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-sm border border-gray-200/80">
-          <span className="flex h-2 w-2 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#068237] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#068237]"></span>
-          </span>
-          <span className="text-xs font-semibold text-[#082C20] tracking-wide">
-            Enugu State Spatial Verification Map
-          </span>
+          {/* Reset / Back to All LGAs Button */}
+          {selectedLga ? (
+            <button
+              onClick={handleResetToAllLgas}
+              className="pointer-events-auto text-[10px] font-bold px-3 py-1 bg-[#068237] hover:bg-[#056d2e] text-white rounded-full shadow transition flex items-center gap-1"
+            >
+              <span>← All 17 LGAs</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleResetToAllLgas}
+              className="pointer-events-auto text-[10px] font-medium px-2.5 py-1 bg-white/90 hover:bg-white text-[#082C20] rounded-full shadow-xs border border-white/70 transition"
+            >
+              Reset View ↺
+            </button>
+          )}
         </div>
 
-        {/* Reset View Button on Cover */}
-        <button
-          onClick={handleResetMap}
-          className="absolute top-4 right-4 sm:right-8 z-10 text-xs font-medium px-3.5 py-1.5 bg-white/90 hover:bg-white text-[#082C20] rounded-full shadow-sm border border-gray-200/80 transition"
-        >
-          Reset View ↺
-        </button>
-
-        {/* Floating Project Inspection Card (When a pin is clicked) */}
-        {activeProject && (
-          <div className="absolute bottom-6 right-4 sm:right-8 left-4 sm:left-auto sm:w-[360px] z-20 bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 animate-in fade-in slide-in-from-bottom duration-200">
-            <div className="flex items-start justify-between gap-2 mb-1.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#E8F5E9] text-[#068237]">
-                {activeProject.category}
+        {/* Floating Detail Card for Selected LGA */}
+        {selectedLga && (
+          <div className="absolute inset-x-3 bottom-3 sm:inset-x-auto sm:right-4 sm:bottom-3 sm:w-[290px] z-20 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-gray-100 p-3.5 animate-in fade-in duration-200 text-left">
+            <div className="flex items-start justify-between gap-1 mb-1">
+              <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#E8F5E9] text-[#068237]">
+                {selectedLga.senatorialDistrict} District
               </span>
               <button
-                onClick={() => setActiveProject(null)}
-                className="text-gray-400 hover:text-gray-700 text-sm p-1"
+                onClick={handleResetToAllLgas}
+                className="text-gray-400 hover:text-gray-700 text-xs px-1"
+                title="Back to all LGAs"
               >
                 ✕
               </button>
             </div>
 
-            <h4 className="text-sm font-bold text-[#082C20] leading-snug mb-1">
-              {activeProject.title}
+            <h4 className="text-sm font-bold text-[#082C20] leading-snug mb-0.5">
+              {selectedLga.name} Local Government Area
             </h4>
-            <div className="text-xs text-gray-500 mb-2">
-              {activeProject.lgaName} • {activeProject.ward}
+            <div className="text-[10px] text-gray-500 mb-1.5">
+              HQs: {selectedLga.hq} • {activeCommunity ? (
+                <span className="text-[#E8A812] font-bold">Community: {activeCommunity.name}</span>
+              ) : (
+                <span className="text-[#068237] font-semibold">{selectedLga.communities?.length || 0} Communities Mapped</span>
+              )}
             </div>
 
-            <div className="flex items-center justify-between text-xs bg-gray-50 p-2 rounded-lg border border-gray-100 mb-2.5">
-              <span className="text-gray-500">Allocation:</span>
-              <span className="font-bold text-[#068237]">{activeProject.budget}</span>
-              <span className="text-gray-500">•</span>
-              <span className="font-semibold text-[#082C20]">{activeProject.status}</span>
-            </div>
-
-            {activeProject.images?.[0] && (
-              <img
-                src={activeProject.images[0]}
-                alt={activeProject.title}
-                className="w-full h-24 object-cover rounded-lg mb-2.5"
-              />
-            )}
+            <p className="text-[11px] text-gray-600 line-clamp-2 mb-2 leading-relaxed">
+              {selectedLga.summary}
+            </p>
 
             <button
               onClick={() => {
                 if (onSelectProjectForQuery) {
+                  const targetName = activeCommunity
+                    ? `${activeCommunity.name} community in ${selectedLga.name} Local Government Area`
+                    : `${selectedLga.name} Local Government Area`;
                   onSelectProjectForQuery(
-                    `What are the verified details and budget records for "${activeProject.title}" in ${activeProject.lgaName}?`
+                    `What public projects, schools, health centers, and budget allocations are verified in ${targetName}?`
                   );
                 }
               }}
-              className="w-full py-2 bg-[#068237] hover:bg-[#056d2e] text-white text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm"
+              className="w-full py-1.5 bg-[#068237] hover:bg-[#056d2e] text-white text-[11px] font-semibold rounded-lg transition flex items-center justify-center gap-1 shadow-xs"
             >
-              <span>Ask AI About This Project</span>
+              <span>Explore in Chat</span>
               <span>➔</span>
             </button>
           </div>

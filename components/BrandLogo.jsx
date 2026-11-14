@@ -42,7 +42,7 @@ export default function BrandLogo({ showTagline = false, size = "default", class
       <div className="flex flex-col">
         <div className="flex items-baseline gap-1.5">
           <span className={`font-black tracking-tight font-sans text-xl sm:text-2xl leading-none ${textColor}`}>
-            ASK ENUGU
+            AskEnugu
           </span>
           <span className="h-2 w-2 rounded-full bg-[#E8A812]" />
         </div>

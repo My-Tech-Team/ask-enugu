@@ -1,14 +1,31 @@
 import { PROJECTS, LGAS } from "@/data/enugu-data";
 
+const expandLocalGovernmentArea = (text) =>
+  typeof text === "string"
+    ? text.replace(/\bLGAs\b/gi, "Local Government Areas").replace(/\bLGA\b/gi, "Local Government Area")
+    : text;
+
 export async function POST(req) {
   try {
-    const { query } = await req.json();
+    const { query, history = [] } = await req.json();
 
     if (!query || typeof query !== "string") {
       return Response.json({ error: "A valid query is required." }, { status: 400 });
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
+    const conversationContext = Array.isArray(history)
+      ? history
+          .filter(
+            (message) =>
+              message &&
+              (message.role === "user" || message.role === "assistant") &&
+              typeof message.text === "string"
+          )
+          .slice(-6)
+          .map((message) => `${message.role === "user" ? "User" : "AskEnugu"}: ${message.text}`)
+          .join("\n")
+      : "";
 
     // Filter relevant projects for grounding
     const lowerQuery = query.toLowerCase();
@@ -23,25 +40,34 @@ export async function POST(req) {
     });
 
     const contextGrounding = `
-You are the official intelligence engine for "Ask Enugu" — a proposed independent public-interest platform for finding, understanding, and verifying government information in Enugu State, Nigeria.
+You are the intelligence assistant for "AskEnugu" — an independent public-interest platform for understanding the policies, public services, spending, reforms, and development of Enugu State during Governor Peter Mbah's tenure.
 
 BRAND & VOICE GUIDELINES:
-1. Ground every statement strictly in the provided records below. Never invent or hallucinate information.
-2. Tone: Helpful, direct, objective, and transparent about sources.
-3. Language: Clear, everyday plain English.
-4. Essential Phrases:
+1. Cover the full public-interest picture: policies, taxes and levies, public services, education, health, jobs, infrastructure, budgets, reforms, and development during Governor Peter Mbah's tenure. Do not limit answers to projects.
+2. Ground every statement strictly in the provided records below. Never invent or hallucinate information.
+3. Tone: Helpful, direct, objective, and transparent about sources.
+4. Language: Clear, everyday plain English.
+5. Essential Phrases:
    - Use "The available records show..." when stating facts.
    - Use "An explanation is not available in the records reviewed" if a project, cost, contractor, or detail is not explicitly mentioned in the records.
-5. Emphasize that the platform is independent and non-partisan.
+6. Emphasize that the platform is independent and non-partisan.
+7. When referring to Enugu State's governor or his administration, use the full name "Governor Peter Mbah". Do not substitute another name.
+8. A social-media post or public discussion is not verified evidence by itself. If the records do not contain a verifiable source for it, say so plainly instead of treating it as fact.
+9. Always write "Local Government Area" in full. Never use the abbreviation "LGA" in an answer.
 
 OFFICIAL VERIFIED PROJECT RECORDS DATABASE:
 ${JSON.stringify(PROJECTS, null, 2)}
 
-ENUGU 17 LGAS DIRECTORY:
+ENUGU 17 LOCAL GOVERNMENT AREAS DIRECTORY:
 ${JSON.stringify(LGAS.map((l) => ({ id: l.id, name: l.name, hq: l.hq, district: l.senatorialDistrict, stats: l.stats })), null, 2)}
 
 USER QUESTION:
 "${query}"
+
+RECENT CONVERSATION CONTEXT:
+${conversationContext || "No previous conversation."}
+
+Use the conversation context only to understand follow-up references such as "this", "that project", or "the source". It is not evidence: facts must remain grounded in the verified records database.
 
 INSTRUCTIONS FOR JSON OUTPUT:
 You must reply ONLY in valid JSON format with the following keys:
@@ -88,9 +114,9 @@ You must reply ONLY in valid JSON format with the following keys:
                 .filter(Boolean);
 
               return Response.json({
-                summary: parsed.summary,
+                summary: expandLocalGovernmentArea(parsed.summary),
                 sources: parsed.sources || ["Enugu State Public Records"],
-                evidenceGap: parsed.evidenceGap || null,
+                evidenceGap: expandLocalGovernmentArea(parsed.evidenceGap) || null,
                 projects: enrichedProjects.length > 0 ? enrichedProjects : matchedProjects.slice(0, 3),
               });
             } catch {
@@ -114,9 +140,9 @@ You must reply ONLY in valid JSON format with the following keys:
       sourcesList = [p.sourceDocument];
       gapNote = p.gapNote || "Project verified against published capital budget records.";
     } else {
-      summaryText = `The available records reviewed for "${query}" do not show an exact indexed match in current approved capital expenditure files. You can inspect the interactive map above to see all verified projects across the 17 Local Government Areas.`;
-      sourcesList = ["Enugu State Open Data & 2024 Appropriation Documents"];
-      gapNote = "An explanation is not available in the records reviewed for this specific query.";
+      summaryText = `The available records reviewed for "${query}" do not show an exact verified match in the current AskEnugu database. The database currently has the strongest coverage for capital projects and Local Government Area records, so it cannot yet verify every policy, tax, public-service, or public-discussion question from this source alone.`;
+      sourcesList = ["AskEnugu verified records database"];
+      gapNote = "A source covering this specific policy, tax, service, or public discussion is not available in the records reviewed.";
     }
 
     return Response.json({
@@ -126,7 +152,7 @@ You must reply ONLY in valid JSON format with the following keys:
       projects: matchedProjects.slice(0, 3),
     });
   } catch (error) {
-    console.error("Ask Enugu Route Error:", error);
+    console.error("AskEnugu Route Error:", error);
     return Response.json(
       { error: "Unable to process the inquiry at this moment." },
       { status: 500 }
