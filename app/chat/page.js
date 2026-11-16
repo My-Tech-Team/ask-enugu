@@ -357,7 +357,7 @@ function ChatContent() {
   return (
     <div
       className="min-h-screen flex flex-col"
-      style={{ backgroundColor: "#E8F5E9", color: "#1F2C35" }}
+      style={{ backgroundColor: "white", color: "#1F2C35" }}
     >
       <div className="flex flex-1 min-h-0">
         {/* ── 2. CHAT THREAD ── */}
@@ -407,7 +407,7 @@ function ChatContent() {
         )}
 
         {/* Messages */}
-        <div className="space-y-6 pt-28 md:pt-16">
+        <div className="space-y-6 pt-16 md:pt-16">
           {messages.map((msg, index) => (
             <div key={msg.id || index}>
               {msg.role === "user" ? (
@@ -806,7 +806,7 @@ export default function ChatPage() {
       fallback={
         <div
           className="min-h-screen flex items-center justify-center"
-          style={{ backgroundColor: "#E8F5E9", color: "#1F2C35" }}
+          style={{ backgroundColor: "white", color: "#1F2C35" }}
         >
           Loading...
         </div>
