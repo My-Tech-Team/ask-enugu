@@ -362,7 +362,7 @@ function ChatContent() {
     >
       <div className="flex flex-1 min-h-0">
         {/* ── 2. CHAT THREAD ── */}
-        <main className="flex-1 w-full max-w-[93%] mx-auto px-4 sm:px-6 pb-36 flex flex-col">
+        <main className="flex-1 w-full max-w-[93%] pt-16 mx-auto px-4 sm:px-6 pb-36 flex flex-col">
         {/* Empty state */}
         {messages.length === 0 && !isLoading && (
           <div className="flex-1 flex flex-col items-center justify-center text-center py-14 gap-4">

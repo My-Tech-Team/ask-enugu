@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="min-h-full flex flex-col bg-white text-[#1F2C35] antialiased selection:bg-[#E8A812] selection:text-[#082C20]">
         <DesktopSiteHeader />
-        <div className="pt-16">{children}</div>
+        <div className="">{children}</div>
       </body>
     </html>
   );

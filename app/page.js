@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import AboutPage from "./about/page";
 
 const suggestedQuestions = [
   "What tax or levy changes affect businesses?",
@@ -24,7 +25,48 @@ export default function Home() {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const mediaStreamRef = useRef(null);
+  const welcomeAudioUrlRef = useRef(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const welcomeKey = "askenugu-welcome-attempted";
+    if (window.sessionStorage.getItem(welcomeKey)) return undefined;
+
+    // Try the same cloud voice used in chat. Some first-visit browsers will
+    // block audible autoplay; the landing page remains fully usable either way.
+    window.sessionStorage.setItem(welcomeKey, "true");
+    let cancelled = false;
+
+    fetch("/api/speech", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ text: "Welcome to AskEnugu. What would you like to know?" }),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Welcome voice unavailable");
+        return response.blob();
+      })
+      .then((audioBlob) => {
+        if (cancelled) return;
+        const audioUrl = URL.createObjectURL(audioBlob);
+        welcomeAudioUrlRef.current = audioUrl;
+        const audio = new Audio(audioUrl);
+        audio.volume = 0.9;
+        audio.onended = () => {
+          URL.revokeObjectURL(audioUrl);
+          if (welcomeAudioUrlRef.current === audioUrl) welcomeAudioUrlRef.current = null;
+        };
+        return audio.play();
+      })
+      .catch(() => {
+        // Autoplay restrictions are expected on some first visits.
+      });
+
+    return () => {
+      cancelled = true;
+      if (welcomeAudioUrlRef.current) URL.revokeObjectURL(welcomeAudioUrlRef.current);
+    };
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -117,7 +159,8 @@ export default function Home() {
   }, [router]);
 
   return (
-    <section className="body-bg flex flex-col justify-between min-h-screen relative overflow-hidden selection:bg-[#E8A812] selection:text-[#082C20]">
+    <>
+    <section className="body-bg pt-16 flex flex-col justify-between md:min-h-screen relative overflow-hidden selection:bg-[#E8A812] selection:text-[#082C20]">
       <div className="hero-video" aria-hidden="true">
         <video
           autoPlay
@@ -131,6 +174,7 @@ export default function Home() {
             event.currentTarget.muted = true;
             event.currentTarget.volume = 0;
           }}
+         
         >
           <source
             src="https://res.cloudinary.com/zl99z5t1/video/upload/v1794647345/Government_House_ICC_Enugu-q1080_kbzrux.mp4"
@@ -139,9 +183,9 @@ export default function Home() {
         </video>
       </div>
       {/* 2. HERO CONTENT AREA (Moved down slightly, smaller title, compact spacing) */}
-      <main className="w-full max-w-3xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center pt-40 sm:pt-30 z-10">
+      <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center pt-20 sm:pt-36 z-10">
         {/* Slightly Smaller Title, Brought Down Naturally */}
-        <h1 className="text-4xl sm:text-3xl md:text-5xl font-bold tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] mb-5 sm:mb-6">
+        <h1 className="text-5xl sm:text-4xl md:text-6xl font-bold tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] mb-5 sm:mb-6">
           What would you like to know?
         </h1>
         <p className="text-md text-white font-medium drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] mb-6">Ask about policies, taxes, public services, and development during Governor Peter Mbah&apos;s tenure.</p>
@@ -149,7 +193,7 @@ export default function Home() {
         {/* Capsule Search Bar */}
         <form
           onSubmit={handleSearch}
-          className="w-full bg-white/95 backdrop-blur-sm rounded-full p-1.5 pl-5 sm:pl-6 flex items-center shadow-md border border-[#068237]/60 focus-within:border-[#068237] focus-within:ring-2 focus-within:ring-[#068237]/20 transition mb-5 sm:mb-6"
+          className="w-[80%] mx-auto bg-white/95 backdrop-blur-sm rounded-full p-1.5 pl-5 sm:pl-6 flex items-center shadow-md border border-[#068237]/60 focus-within:border-[#068237] focus-within:ring-2 focus-within:ring-[#068237]/20 transition mb-5 sm:mb-6"
         >
           {/* Magnifying Glass Icon (Left) */}
           <svg
@@ -235,5 +279,7 @@ export default function Home() {
       <div />
       <MobileBottomNav active="home" />
     </section>
+    <AboutPage />
+    </>
   );
 }

@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -96,10 +97,6 @@ body {
   .map-page {
     box-sizing: border-box;
     height: calc(100dvh - 64px) !important;
-  }
-
-  .map-lga-strip {
-    display: none !important;
   }
 
   .map-canvas-area {

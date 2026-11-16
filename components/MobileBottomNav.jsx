@@ -9,7 +9,7 @@ const items = [
   { href: "/", label: "Home", key: "home" },
   { href: "/map", label: "Map", key: "map" },
   { href: "/chat?topic=all", label: "Topics", key: "topics" },
-  { href: "/chat?q=What is AskEnugu and who runs it?", label: "About", key: "about" },
+  { href: "/about", label: "About", key: "about" },
   { href: "/chat?q=How can I contact public information officers in Enugu?", label: "Contact", key: "contact" },
 ];
 
@@ -18,7 +18,7 @@ export default function MobileBottomNav({ active }) {
 
   return (
     <div className="sm:hidden">
-      <header className="fixed inset-x-0 top-0 z-[70] flex h-16 items-center justify-between border-b bg-[#082C20]/95 px-4 shadow-sm backdrop-blur" style={{ borderColor: "rgba(255,255,255,0.14)" }}>
+      <header className="fixed inset-x-0 top-0 z-[70] flex py-3 items-center justify-between border-b bg-[#082C20]/95 px-4 shadow-sm backdrop-blur" style={{ borderColor: "rgba(255,255,255,0.14)" }}>
         <Link href="/" aria-label="AskEnugu home" className="flex items-center">
           <Image src="/logo2.png" alt="AskEnugu" width={126} height={38} className="h-auto max-h-16 w-auto object-contain" priority />
         </Link>

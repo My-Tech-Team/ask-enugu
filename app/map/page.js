@@ -22,6 +22,7 @@ export default function FullMapPage() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [mapReady, setMapReady] = useState(false);
+  const [proofProject, setProofProject] = useState(null);
 
   /* ── Projects for selected LGA ── */
   const lgaProjects = useMemo(() => {
@@ -282,9 +283,9 @@ export default function FullMapPage() {
   }
 
   return (
-    <div className="map-page" style={{ height: "calc(100dvh - 64px)", display: "flex", flexDirection: "column", overflow: "hidden", background: "#FDFBF7" }}>
+    <div className="map-page pt-20 md:pt-20" style={{ height: "calc(100dvh - 64px)", display: "flex", flexDirection: "column", overflow: "hidden", background: "#FDFBF7" }}>
 
-      <section className="map-hero" style={{ flexShrink: 0, padding: "16px 24px", background: "#E8F5E9", borderBottom: "1px solid #cfe6d3" }}>
+      <section className="map-hero " style={{ flexShrink: 0, padding: "16px 24px", background: "#ffff", borderBottom: "1px solid #cfe6d3" }}>
         <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#068237" }}>Explore Enugu State</p>
         <h1 style={{ margin: "4px 0 3px", fontSize: 22, lineHeight: 1.2, color: "#082C20" }}>Find records across all 17 LGAs</h1>
         <p style={{ margin: 0, fontSize: 13, color: "#4B5563" }}>Select an area to explore available projects and public records.</p>
@@ -392,7 +393,7 @@ export default function FullMapPage() {
         {selectedLga && (
           <aside className="mt-14 md:mt-0" style={{
             position: "fixed", top: 0, right: 0, bottom: 0, zIndex: 60,
-            width: "min(680px, 100vw)", background: "white",
+            width: "min(540px, 100vw)", background: "white",
             borderLeft: "1px solid #e5e7eb", display: "flex", flexDirection: "column",
             overflow: "hidden", boxShadow: "-14px 0 36px rgba(0,0,0,0.18)",
             animation: "slideIn 0.25s ease-out",
@@ -465,7 +466,7 @@ export default function FullMapPage() {
                       }}>
                         {/* Photo */}
                         {proj.images?.[0] && (
-                          <div style={{ width: "100%", height: 220, borderRadius: 10, overflow: "hidden", marginBottom: 10, position: "relative" }}>
+                          <div style={{ width: "100%", height: 320, borderRadius: 10, overflow: "hidden", marginBottom: 10, position: "relative" }}>
                             <img src={proj.images[0]} alt={proj.title}
                               style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                             <span style={{
@@ -474,6 +475,15 @@ export default function FullMapPage() {
                               fontSize: 9, padding: "2px 7px", borderRadius: 4, fontWeight: 600,
                             }}>Verified Site Photo</span>
                           </div>
+                        )}
+                        {((proj.images?.length || 0) + (proj.videos?.length || 0)) > 0 && (
+                          <button
+                            type="button"
+                            onClick={(event) => { event.stopPropagation(); setProofProject(proj); }}
+                            style={{ width: "100%", marginBottom: 12, padding: "9px 12px", borderRadius: 9, border: "1px solid rgba(6,130,55,0.28)", background: "#E8F5E9", color: "#068237", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+                          >
+                            View proof ({(proj.images?.length || 0) + (proj.videos?.length || 0)})
+                          </button>
                         )}
 
                         {/* Sector + status */}
@@ -546,6 +556,24 @@ export default function FullMapPage() {
       </div>
 
       <MobileBottomNav active="map" />
+
+      {proofProject && (
+        <div onClick={() => setProofProject(null)} role="dialog" aria-modal="true" aria-label={`${proofProject.title} proof gallery`} style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, background: "rgba(0,0,0,0.76)" }}>
+          <div onClick={(event) => event.stopPropagation()} style={{ width: "min(960px, 100%)", maxHeight: "90dvh", overflowY: "auto", borderRadius: 18, background: "white", padding: 18, boxShadow: "0 24px 70px rgba(0,0,0,0.35)" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 14 }}>
+              <div>
+                <p style={{ margin: 0, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#068237" }}>Project proof</p>
+                <h2 style={{ margin: "4px 0 0", fontSize: 18, color: "#082C20" }}>{proofProject.title}</h2>
+              </div>
+              <button type="button" onClick={() => setProofProject(null)} style={{ border: "none", borderRadius: 999, padding: "8px 12px", background: "#F3F4F6", color: "#1F2C35", fontWeight: 700, cursor: "pointer" }}>Close</button>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
+              {proofProject.images?.map((image, index) => <img key={image} src={image} alt={`${proofProject.title} proof ${index + 1}`} style={{ width: "100%", minHeight: 280, borderRadius: 12, objectFit: "cover" }} />)}
+              {proofProject.videos?.map((video) => <video key={video} controls playsInline style={{ width: "100%", minHeight: 280, borderRadius: 12, background: "#082C20" }}><source src={video} /></video>)}
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx global>{`
         @keyframes spin { to { transform: rotate(360deg); } }
