@@ -23,7 +23,7 @@ export default function MobileBottomNav() {
 
   return (
     <div className="sm:hidden">
-      <header className={`fixed inset-x-0 top-0 z-[70] flex items-center justify-between px-4 py-3 ${isLandingPage ? "" : "border-b"}`} style={isLandingPage ? undefined : { borderColor: "rgba(8,44,32,0.12)" }}>
+      <header className={`fixed inset-x-0 top-0 z-[70] flex items-center justify-between px-4 py-3 ${isLandingPage ? "" : "border-b bg-white"}`} style={isLandingPage ? undefined : { borderColor: "rgba(8,44,32,0.12)" }}>
         <Link href="/" aria-label="AskEnugu home" className="flex items-center">
           <Image src={isLandingPage ? "/logo2.png" : "/logo1.png"} alt="AskEnugu" width={126} height={38} className="h-auto max-h-16 w-auto object-contain" priority />
         </Link>

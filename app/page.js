@@ -163,17 +163,16 @@ export default function Home() {
       <div className="hero-video" aria-hidden="true">
         <video
           autoPlay
-          defaultmuted="true"
           loop
           muted
           playsInline
           preload="metadata"
           poster="https://res.cloudinary.com/zl99z5t1/image/upload/v1794646807/images_1_avzcvi.jpg"
+          className="w-full h-full object-cover"
           onCanPlay={(event) => {
             event.currentTarget.muted = true;
             event.currentTarget.volume = 0;
           }}
-         
         >
           <source
             src="https://res.cloudinary.com/zl99z5t1/video/upload/v1794647345/Government_House_ICC_Enugu-q1080_kbzrux.mp4"

@@ -11,7 +11,7 @@ export default function DesktopSiteHeader() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-[60] hidden w-full items-center py-2 md:flex ${
-        isLandingPage ? "" : "border-b"
+        isLandingPage ? "" : "border-b bg-white"
       }`}
       style={isLandingPage ? undefined : { borderColor: "rgba(8,44,32,0.12)" }}
     >
