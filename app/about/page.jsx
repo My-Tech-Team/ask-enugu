@@ -64,7 +64,7 @@ function SectionCard({ label, last = false, children }) {
 export default function AboutPage() {
   return (
     <main>
-      <section className="bg-white md:pt-32 pt-20 pb-8 sm:pb-16">
+      <section className="bg-white md:pt-32 pt-10 pb-8 sm:pb-16">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
             {/* Left: stays in place on large screens */}

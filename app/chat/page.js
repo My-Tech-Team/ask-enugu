@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import MobileBottomNav from "@/components/MobileBottomNav";
 
 const followUpQuestions = [
   "Which records support this answer?",
@@ -797,7 +796,6 @@ function ChatContent() {
           </div>
         </div>
       )}
-      <MobileBottomNav active="chat" />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import "./globals.css";
 import DesktopSiteHeader from "@/components/DesktopSiteHeader";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 export const metadata = {
   title: "AskEnugu — Your Government Information Hub",
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="min-h-full flex flex-col bg-white text-[#1F2C35] antialiased selection:bg-[#E8A812] selection:text-[#082C20]">
         <DesktopSiteHeader />
+        <MobileBottomNav />
         <div className="">{children}</div>
       </body>
     </html>

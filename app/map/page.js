@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, useMemo } from "react";
 import { LGAS, PROJECTS } from "@/data/enugu-data";
-import MobileBottomNav from "@/components/MobileBottomNav";
 
 const MAPBOX_TOKEN =
   process.env.NEXT_PUBLIC_MAPBOX_TOKEN ||
@@ -283,7 +282,7 @@ export default function FullMapPage() {
   }
 
   return (
-    <div className="map-page pt-20 md:pt-20" style={{ height: "calc(100dvh - 64px)", display: "flex", flexDirection: "column", overflow: "hidden", background: "#FDFBF7" }}>
+    <div className="map-page pt-20 md:pt-20" style={{ height: "calc(100dvh - 64px)", display: "flex", flexDirection: "column", overflow: "hidden", background: "white" }}>
 
       <section className="map-hero " style={{ flexShrink: 0, padding: "16px 24px", background: "#ffff", borderBottom: "1px solid #cfe6d3" }}>
         <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#068237" }}>Explore Enugu State</p>
@@ -555,7 +554,6 @@ export default function FullMapPage() {
         )}
       </div>
 
-      <MobileBottomNav active="map" />
 
       {proofProject && (
         <div onClick={() => setProofProject(null)} role="dialog" aria-modal="true" aria-label={`${proofProject.title} proof gallery`} style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, background: "rgba(0,0,0,0.76)" }}>

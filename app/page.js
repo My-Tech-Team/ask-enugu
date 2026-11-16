@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import MobileBottomNav from "@/components/MobileBottomNav";
 import AboutPage from "./about/page";
 
 const suggestedQuestions = [
@@ -183,7 +182,7 @@ export default function Home() {
         </video>
       </div>
       {/* 2. HERO CONTENT AREA (Moved down slightly, smaller title, compact spacing) */}
-      <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center pt-20 sm:pt-36 z-10">
+      <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center text-center pt-26 sm:pt-36 z-10">
         {/* Slightly Smaller Title, Brought Down Naturally */}
         <h1 className="text-5xl sm:text-4xl md:text-6xl font-bold tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] mb-5 sm:mb-6">
           What would you like to know?
@@ -193,7 +192,7 @@ export default function Home() {
         {/* Capsule Search Bar */}
         <form
           onSubmit={handleSearch}
-          className="w-[80%] mx-auto bg-white/95 backdrop-blur-sm rounded-full p-1.5 pl-5 sm:pl-6 flex items-center shadow-md border border-[#068237]/60 focus-within:border-[#068237] focus-within:ring-2 focus-within:ring-[#068237]/20 transition mb-5 sm:mb-6"
+          className="md:w-[80%] mx-auto bg-white/95 backdrop-blur-sm rounded-full p-1.5 pl-5 sm:pl-6 flex items-center shadow-md border border-[#068237]/60 focus-within:border-[#068237] focus-within:ring-2 focus-within:ring-[#068237]/20 transition mb-5 sm:mb-6"
         >
           {/* Magnifying Glass Icon (Left) */}
           <svg
@@ -277,9 +276,8 @@ export default function Home() {
           <CircularCarousel />
         </div>*/}
       <div />
-      <MobileBottomNav active="home" />
     </section>
-    <AboutPage />
+    
     </>
   );
 }

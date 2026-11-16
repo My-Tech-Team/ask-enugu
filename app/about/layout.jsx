@@ -5,12 +5,6 @@ export const metadata = {
 };
 
 export default function AboutLayout({ children }) {
-  return (
-    <>
-      <MobileBottomNav active="about" />
-      {children}
-    </>
-  );
+  return children;
 }
-import MobileBottomNav from "@/components/MobileBottomNav";
 
