@@ -9,7 +9,12 @@ export default function DesktopSiteHeader() {
   const textColor = isLandingPage ? "text-white hover:text-[#E8A812]" : "text-[#082C20] hover:text-[#068237]";
  
   return (
-    <header className="fixed inset-x-0  top-0 z-[60] hidden w-full items-center py-2 md:flex">
+    <header
+      className={`fixed inset-x-0 top-0 z-[60] hidden w-full items-center py-2 md:flex ${
+        isLandingPage ? "" : "border-b"
+      }`}
+      style={isLandingPage ? undefined : { borderColor: "rgba(8,44,32,0.12)" }}
+    >
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-8 xl:px-12">
         <Link href="/" className="flex items-center" aria-label="AskEnugu home">
           <Image src={isLandingPage ? "/logo2.png" : "/logo1.png"} alt="AskEnugu" width={150} height={46} className="h-auto max-h-16 w-auto object-contain" priority />

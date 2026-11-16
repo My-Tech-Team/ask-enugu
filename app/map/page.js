@@ -282,7 +282,7 @@ export default function FullMapPage() {
   }
 
   return (
-    <div className="map-page pt-20 md:pt-20" style={{ height: "calc(100dvh - 64px)", display: "flex", flexDirection: "column", overflow: "hidden", background: "white" }}>
+    <div className="map-page mt-16 md:mt-20" style={{ height: "calc(100dvh - 64px)", display: "flex", flexDirection: "column", overflow: "hidden", background: "white" }}>
 
       <section className="map-hero " style={{ flexShrink: 0, padding: "16px 24px", background: "#ffff", borderBottom: "1px solid #cfe6d3" }}>
         <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#068237" }}>Explore Enugu State</p>

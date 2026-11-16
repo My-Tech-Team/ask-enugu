@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="h-full bg-[#E8F5E9]">
+    <html lang="en" className="h-full bg-white">
       <head>
         <link
           href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css"
