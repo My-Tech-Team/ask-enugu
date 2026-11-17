@@ -4,12 +4,6 @@ import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
-const followUpQuestions = [
-  "Which records support this answer?",
-  "What information is not verified?",
-  "Show related projects in my Local Government Area",
-];
-
 const formatRecordingTime = (totalSeconds) => {
   const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
   const seconds = (totalSeconds % 60).toString().padStart(2, "0");
@@ -241,6 +235,7 @@ function ChatContent() {
         sources: data.sources || [],
         evidenceGap: data.evidenceGap || null,
         projects: data.projects || [],
+        suggestions: Array.isArray(data.suggestions) ? data.suggestions : [],
       };
 
       const completedMessages = [...nextMessages, assistantMsg];
@@ -456,8 +451,8 @@ function ChatContent() {
                     {activeSpeech?.messageId === msg.id && activeSpeech.status === "loading"
                       ? "Preparing voice response…"
                       : activeSpeech?.messageId === msg.id && activeSpeech.status !== "finished"
-                        ? `${msg.summary.slice(0, Math.max(1, activeSpeech.characters))}${activeSpeech.characters < msg.summary.length ? "▍" : ""}`
-                        : msg.summary}
+                        ? `${msg.summary.replace(/\*\*/g, "").slice(0, Math.max(1, activeSpeech.characters))}${activeSpeech.characters < msg.summary.replace(/\*\*/g, "").length ? "▍" : ""}`
+                        : msg.summary?.replace(/\*\*/g, "")}
                   </div>
 
                   {activeSpeech?.messageId === msg.id && activeSpeech.status !== "finished" ? (
@@ -574,24 +569,26 @@ function ChatContent() {
                     </div>
                   )}
 
-                  {!(activeSpeech?.messageId === msg.id && activeSpeech.status !== "finished") && <div className="pt-1">
-                    <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "#9CA3AF" }}>
-                      Continue the conversation
-                    </span>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {followUpQuestions.map((question) => (
-                        <button
-                          key={question}
-                          type="button"
-                          onClick={() => executeChat(question)}
-                          className="rounded-full border px-3 py-1.5 text-xs font-medium transition hover:border-[#068237] hover:text-[#068237]"
-                          style={{ backgroundColor: "white", borderColor: "rgba(0,0,0,0.12)", color: "#374151" }}
-                        >
-                          {question}
-                        </button>
-                      ))}
+                  {!(activeSpeech?.messageId === msg.id && activeSpeech.status !== "finished") && msg.suggestions && msg.suggestions.length > 0 && (
+                    <div className="pt-2">
+                      <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "#9CA3AF" }}>
+                        Continue the conversation
+                      </span>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {msg.suggestions.map((question) => (
+                          <button
+                            key={question}
+                            type="button"
+                            onClick={() => executeChat(question)}
+                            className="rounded-full border px-3.5 py-1.5 text-xs font-medium transition hover:border-[#068237] hover:text-[#068237] hover:bg-white shadow-2xs"
+                            style={{ backgroundColor: "rgba(255,255,255,0.72)", borderColor: "rgba(6,130,55,0.25)", color: "#082C20" }}
+                          >
+                            {question} →
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>}
+                  )}
                     
                     
                     

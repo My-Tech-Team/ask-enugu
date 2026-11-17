@@ -1,0 +1,48 @@
+ENUGU STATE HEALTHCARE
+A Detailed Record of Health Challenges, Government Actions and Initiatives
+Governor Peter Ndubuisi Mbah Administration
+Coverage: 29 May 2023 to 17 November 2026
+Prepared as a conversational knowledge source for AskEnugu AI
+How AskEnugu AI should use this document
+This document records what the Mbah administration has built, equipped, staffed and delivered in Enugu State's health sector, and the health problems it set out to address. Answers should explain what was done, where and when, who carried it out, and what it changes for residents, in ordinary language.
+The document does not claim that every health problem has been solved. Figures are given with their dates. Numbers for different dates are snapshots of progress, not separate totals.
+1. Who delivers healthcare in Enugu
+Health services in Enugu State operate at three levels. Primary healthcare (community clinics) is run by the Enugu State Primary Healthcare Development Agency. Secondary healthcare (general and cottage hospitals) is managed through the state's hospital management board. Tertiary care is provided by teaching hospitals, including the Enugu State University of Science and Technology Teaching Hospital (ESUTH) and the University of Medical and Applied Sciences Teaching Hospital (SUMASTH). The Enugu State Agency for Universal Health Coverage runs the state health insurance scheme. The Ministry of Health, led by Commissioner Professor George Ugwu, coordinates policy.
+2. The health situation the administration set out to change
+Before this administration's programme, the state had about 557 primary healthcare centres. The government concluded these were spread too thinly to give reliable service. Its review of maternal, infant and under-five mortality led it to prioritise preventive care at community level. Health workers' unions and doctors' associations also described manpower shortages and a loss of doctors to emigration.
+3. The approach
+The administration's health programme has five parts: a new standard of primary healthcare centre in every ward, the renovation of secondary hospitals, the Enugu International Hospital, recruitment and training of health workers, and expanded health insurance. About 10 percent of the 2026 budget went to health.
+4. Primary healthcare: 260 Type 2 centres
+The administration built 260 Type 2 Primary Healthcare Centres, one in each of the state's 260 political wards. The governor confirmed in November 2026 that all 260 have been built. The first phase was 31 centres, and the programme replaced the approach of spreading resources over the old 557 centres.
+A Type 2 centre is a full primary care facility with skilled health workers, essential drugs, 24-hour service, solar-powered electricity, water and sanitation, and staff quarters. The centres are staffed by a doctor and a nurse.
+The centre at Otuku, Emene, opened on 14 March 2025. In its first months it recorded 369 outpatient and antenatal visits, nine deliveries and 316 immunisations, according to Nigeria Health Watch. The governor supervised the Emene centre in March 2025 and has commissioned centres in several communities, including during his Aninri development centre tour in November 2026. In March 2026, community leaders in Ogbaku, Awgu, described their new centre as a lifeline.
+Operation is being phased in. In April 2026, about 100 centres were fully operational and the governor approved about ₦4 billion to equip 100 more, taking the number to about 200. In November 2026 the governor said some centres have started full operation and staff onboarding continues, so that every ward will have a functional centre.
+The administration also re-equipped and commissioned Type 3 primary health centres in Uzo-Uwani, Awgu and Nkanu East in November 2024. These have standard delivery units, antenatal sections, adolescent units, a pharmacy, operating theatres, and male and female wards. The Medical and Health Workers' Union gave the governor an award for healthcare delivery in April 2026.
+5. Secondary hospitals
+The state has 54 general and cottage hospitals. After a needs assessment, the governor approved the remodelling, re-equipping and re-staffing of these hospitals, starting in phase one with eight that handle the highest patient volumes. Renovation work was under way at 22 cottage and general hospitals in 2025. An electronic medical record system is installed in the general and cottage hospitals so officials can monitor activity remotely.
+At ESUTH, the administration delivered new ambulances, upgraded the accident and emergency complex, renovated ward toilets and bathrooms, and improved security and surveillance.
+6. Enugu International Hospital
+The administration built the 300-bed Enugu International Hospital at Rangers Avenue, Independence Layout, Enugu. Construction began in November 2024. By August 2026 the building was complete and all its medical equipment was installed, and the governor toured it with the Commissioner for Health. Its chief executive is Professor Sam Agwu.
+The hospital has centres for neurosciences (stroke, epilepsy, brain and spine tumours, neurosurgery), renal care and transplant, cardiothoracic care, and wellness and regenerative medicine, along with PET scan services, telemedicine and the usual departments, including mother and child, general surgery, ENT, dental and ophthalmology.
+As of 14 November 2026, its chief executive said the hospital was awaiting its formal inauguration. AskEnugu should describe it as built and fully equipped, and say that the formal inauguration is the remaining step.
+7. Health workforce
+• Recruitment. The state approved the recruitment of 2,250 primary care health workers, including doctors, nurses, midwives, community health officers and pharmacists. By November 2025, 450 were on board, and the governor reported 1,350 on board in 2026. At ESUTH, the administration recruited over 100 resident doctors, consultants and support staff in January 2024, and advanced senior registrars to consultants.
+• Training. Over 3,000 health workers were retrained in 2024 under a federal direct facility financing programme supported by ₦254 million. Staff have also been trained in safe delivery, newborn resuscitation and family planning.
+• Pay and welfare. Resident doctors reported improved hazard allowance and a system to reward productivity among hospital staff.
+• Future workforce. The state is working to produce about 3,000 health professionals a year. In September 2026 the Commissioner for Health said increased admission quotas, including a medicine programme at Godfrey Okoye University, would produce over 900 doctors a year. WHO and partners donated equipment to the state's colleges of nursing at Parklane and Awgu in November 2025. A new teaching hospital is under development at SUMAS, Igbo-Eno.
+8. Health insurance
+The Enugu State Agency for Universal Health Coverage runs the state scheme. By May 2024, at least 200,000 residents were enrolled. An individual premium is ₦12,000 a year, and anyone can pay it on another person's behalf. Pensioners resident in the state can enrol free, regardless of state of origin. The MamaCare initiative, run with the governor's wife's Custos Care Foundation, enrolled 1,701 pregnant women in June 2024 and 868 more in August 2026, covering antenatal care and delivery. Immunisation compliance is a requirement for school enrolment.
+9. Recognition and challenges
+Recognition. The Medical and Health Workers' Union presented the governor with an award for healthcare delivery in April 2026. The National Primary Healthcare Development Agency and the World Health Organization have commended the state's primary care model.
+Challenges. AskEnugu should present these openly.
+• In September 2026, residents of Ezeagu Local Government Area publicly demanded that primary health centres in all 20 wards be made functional, saying many lacked staff, drugs, water and electricity. Their demand was directed at the local council's use of federal allocations.
+• In 2026 the Medical and Health Workers' Union asked the governor to implement the full consolidated health salary structure (CONHESS) and extend the hazard allowance to all its members.
+• A research group reported absenteeism among health workers at some primary health centres and called for stronger accountability.
+• Staffing and full operation of all 260 centres are still being completed, as the governor said in November 2026.
+No published independent measurement of changes in maternal or infant death rates was found in the sources reviewed.
+10. Frequently asked questions
+What has the administration done in health? It built a primary healthcare centre in every ward, remodelled general and cottage hospitals, built and equipped the 300-bed Enugu International Hospital, recruited and trained health workers and expanded health insurance.
+How many primary healthcare centres were built? 260, one per ward. About 100 were fully operational in April 2026, with 100 more being equipped, and staffing continues in the rest.
+Is the Enugu International Hospital complete? Yes, it is built and fully equipped. As of 14 November 2026 its formal inauguration was the remaining step.
+How can someone enrol in the health insurance scheme? Through the Enugu State Agency for Universal Health Coverage. Individuals pay ₦12,000 a year. Pensioners resident in Enugu enrol free.
+Are there problems? Yes. Some residents report non-functional centres, and health workers' unions have asked for fuller pay and allowance implementation.
