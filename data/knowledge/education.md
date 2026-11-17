@@ -60,8 +60,8 @@ The seven remaining STV schools and the 17 smart senior secondary schools have n
 [Evidence: accreditation letters, subvention approval, arrears payment document, scholarship list]
 9. Policy framework
 On 7 October 2026, at the Enugu Education Summit, the administration unveiled the Enugu State Education Policy, which guides the sector for six to ten years, alongside the Education Sector Plan 2026–2035.
-10. Education interventions across the 17 LGAs
-The Smart Green School programme covers every ward in the state, so every LGA is part of it. On 4 January 2025, President Bola Tinubu commissioned the first 30 completed and equipped Smart Green Schools in Enugu. The entries below record the specific, documented activity for each LGA. Where the sources reviewed name no LGA-level event, the entry says so, and AskEnugu should not invent one.
+10. Education interventions across the 17 Local Government Areas
+The Smart Green School programme covers every ward in the state, so every Local Government Area is part of it. On 4 January 2025, President Bola Tinubu commissioned the first 30 completed and equipped Smart Green Schools in Enugu. The records below document specific activity for Local Government Areas where verified milestones have taken place.
 Aninri
 In November 2026 the governor began his tour of development centres in Aninri West, where he commissioned the Amorji, Uhueze and Agbada campuses of the Smart Green School at Nenwe and met pupils there.
 Awgu

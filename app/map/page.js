@@ -396,7 +396,7 @@ export default function FullMapPage() {
             borderLeft: "1px solid #e5e7eb", display: "flex", flexDirection: "column",
             overflow: "hidden", boxShadow: "-14px 0 36px rgba(0,0,0,0.18)",
             animation: "slideIn 0.25s ease-out",
-          }}>
+          }}> 
             {/* Sidebar header */}
             <div style={{ padding: "16px 20px", borderBottom: "1px solid #f3f4f6", background: "#FDFBF7", flexShrink: 0 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>

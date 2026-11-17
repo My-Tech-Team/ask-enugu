@@ -42,9 +42,11 @@ function ChatContent() {
   const speechAudioUrlRef = useRef(null);
   const originalQueryRef = useRef("");
   const speechSessionRef = useRef(0);
+  const speechAnimFrameRef = useRef(null);
 
   const stopSpeaking = useCallback(() => {
     speechSessionRef.current += 1;
+    if (speechAnimFrameRef.current) cancelAnimationFrame(speechAnimFrameRef.current);
     speechAudioRef.current?.pause();
     speechAudioRef.current = null;
     if (speechAudioUrlRef.current) URL.revokeObjectURL(speechAudioUrlRef.current);
@@ -58,61 +60,66 @@ function ChatContent() {
 
     speechSessionRef.current += 1;
     const sessionId = speechSessionRef.current;
+    if (speechAnimFrameRef.current) cancelAnimationFrame(speechAnimFrameRef.current);
     speechAudioRef.current?.pause();
     if (speechAudioUrlRef.current) URL.revokeObjectURL(speechAudioUrlRef.current);
-    window.speechSynthesis.cancel();
+    window.speechSynthesis?.cancel();
     const messageId = message.id;
+    const cleanText = (message.summary || "").replace(/\*\*/g, "").trim();
+
     // Keep the answer hidden until playback actually begins. Cloud audio can take a
     // moment to load, and showing the full response during that gap feels broken.
     setActiveSpeech({ messageId, status: "loading", characters: 0 });
+
     const speakWithBrowserVoice = () => {
       if (!("speechSynthesis" in window)) return;
-    const sentences = message.summary.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [message.summary];
-    let sentenceStart = 0;
+      const sentences = cleanText.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [cleanText];
+      let sentenceStart = 0;
 
-    const speakNextSentence = (sentenceIndex) => {
-      if (speechSessionRef.current !== sessionId) return;
-      if (sentenceIndex >= sentences.length) {
-        setActiveSpeech({ messageId, status: "finished", characters: message.summary.length });
-        return;
-      }
-
-      const sentence = sentences[sentenceIndex];
-      const utterance = new SpeechSynthesisUtterance(sentence);
-      utterance.lang = "en-NG";
-      utterance.rate = 1.15;
-      utterance.pitch = 1;
-      utterance.onstart = () => {
-        if (speechSessionRef.current === sessionId) {
-          setActiveSpeech({ messageId, status: "speaking", characters: sentenceStart });
+      const speakNextSentence = (sentenceIndex) => {
+        if (speechSessionRef.current !== sessionId) return;
+        if (sentenceIndex >= sentences.length) {
+          setActiveSpeech({ messageId, status: "finished", characters: cleanText.length });
+          return;
         }
-      };
-      utterance.onboundary = (event) => {
-        if (speechSessionRef.current !== sessionId) return;
-        const nextSpace = sentence.indexOf(" ", event.charIndex);
-        const spokenCharacters = nextSpace === -1 ? sentence.length : nextSpace + 1;
-        setActiveSpeech({ messageId, status: "speaking", characters: sentenceStart + spokenCharacters });
-      };
-      utterance.onend = () => {
-        if (speechSessionRef.current !== sessionId) return;
-        sentenceStart += sentence.length;
-        speakNextSentence(sentenceIndex + 1);
-      };
-      utterance.onerror = () => {
-        if (speechSessionRef.current !== sessionId) return;
-        sentenceStart += sentence.length;
-        speakNextSentence(sentenceIndex + 1);
-      };
-      window.speechSynthesis.speak(utterance);
-    };
 
-    window.setTimeout(() => speakNextSentence(0), 75);
+        const sentence = sentences[sentenceIndex];
+        const utterance = new SpeechSynthesisUtterance(sentence);
+        utterance.lang = "en-NG";
+        utterance.rate = 1.0;
+        utterance.pitch = 1;
+        utterance.onstart = () => {
+          if (speechSessionRef.current === sessionId) {
+            setActiveSpeech({ messageId, status: "speaking", characters: sentenceStart });
+          }
+        };
+        utterance.onboundary = (event) => {
+          if (speechSessionRef.current !== sessionId) return;
+          // Look ahead to the end of the current word so text matches speech timing
+          const nextSpace = sentence.indexOf(" ", event.charIndex + 2);
+          const spokenCharacters = nextSpace === -1 ? sentence.length : nextSpace + 1;
+          setActiveSpeech({ messageId, status: "speaking", characters: sentenceStart + spokenCharacters });
+        };
+        utterance.onend = () => {
+          if (speechSessionRef.current !== sessionId) return;
+          sentenceStart += sentence.length;
+          speakNextSentence(sentenceIndex + 1);
+        };
+        utterance.onerror = () => {
+          if (speechSessionRef.current !== sessionId) return;
+          sentenceStart += sentence.length;
+          speakNextSentence(sentenceIndex + 1);
+        };
+        window.speechSynthesis.speak(utterance);
+      };
+
+      window.setTimeout(() => speakNextSentence(0), 75);
     };
 
     fetch("/api/speech", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ text: message.summary }),
+      body: JSON.stringify({ text: cleanText }),
     })
       .then((response) => {
         if (!response.ok) throw new Error("Cloud voice unavailable");
@@ -124,24 +131,52 @@ function ChatContent() {
         const audio = new Audio(audioUrl);
         speechAudioRef.current = audio;
         speechAudioUrlRef.current = audioUrl;
-        audio.onplay = () => setActiveSpeech({ messageId, status: "speaking", characters: 0 });
-        audio.ontimeupdate = () => {
+
+        // Synchronize text character progression with audio playback using 60fps frame loop
+        const syncLoop = () => {
+          if (speechSessionRef.current !== sessionId) return;
+          if (!audio || audio.paused || audio.ended) return;
+
           if (Number.isFinite(audio.duration) && audio.duration > 0) {
+            // Apply a 240ms lead-offset so words appear naturally as the speaker articulates them
+            const adjustedTime = Math.min(audio.duration, audio.currentTime + 0.24);
+            const progress = adjustedTime / audio.duration;
+            const rawTarget = Math.ceil(progress * cleanText.length);
+
+            // Snap forward to the end of the current word
+            const nextSpace = cleanText.indexOf(" ", rawTarget);
+            const charCount = nextSpace !== -1 && nextSpace - rawTarget < 12
+              ? nextSpace
+              : rawTarget;
+
             setActiveSpeech({
               messageId,
               status: "speaking",
-              characters: Math.min(message.summary.length, Math.ceil((audio.currentTime / audio.duration) * message.summary.length)),
+              characters: Math.min(cleanText.length, charCount),
             });
           }
+
+          speechAnimFrameRef.current = requestAnimationFrame(syncLoop);
         };
+
+        audio.onplay = () => {
+          setActiveSpeech({ messageId, status: "speaking", characters: 0 });
+          if (speechAnimFrameRef.current) cancelAnimationFrame(speechAnimFrameRef.current);
+          speechAnimFrameRef.current = requestAnimationFrame(syncLoop);
+        };
+
         audio.onpause = () => {
+          if (speechAnimFrameRef.current) cancelAnimationFrame(speechAnimFrameRef.current);
           if (!audio.ended) {
-            setActiveSpeech((current) => current?.messageId === messageId
-              ? { ...current, status: "paused" }
-              : current);
+            setActiveSpeech((current) => (current?.messageId === messageId ? { ...current, status: "paused" } : current));
           }
         };
-        audio.onended = () => setActiveSpeech({ messageId, status: "finished", characters: message.summary.length });
+
+        audio.onended = () => {
+          if (speechAnimFrameRef.current) cancelAnimationFrame(speechAnimFrameRef.current);
+          setActiveSpeech({ messageId, status: "finished", characters: cleanText.length });
+        };
+
         audio.onerror = () => speakWithBrowserVoice();
         audio.play().catch(() => {
           setVoiceInputError("Voice playback was blocked by this browser. Tap Listen again to play the response.");
@@ -161,6 +196,7 @@ function ChatContent() {
       if (speechAudioRef.current.paused) {
         speechAudioRef.current.play();
       } else {
+        if (speechAnimFrameRef.current) cancelAnimationFrame(speechAnimFrameRef.current);
         speechAudioRef.current.pause();
       }
       return;
@@ -232,10 +268,11 @@ function ChatContent() {
         id: crypto.randomUUID(),
         role: "assistant",
         summary: data.summary,
+        followUpQuestions: Array.isArray(data.followUpQuestions) ? data.followUpQuestions : [],
         sources: data.sources || [],
         evidenceGap: data.evidenceGap || null,
         projects: data.projects || [],
-        suggestions: Array.isArray(data.suggestions) ? data.suggestions : [],
+        media: data.media || null,
       };
 
       const completedMessages = [...nextMessages, assistantMsg];
@@ -502,93 +539,91 @@ function ChatContent() {
                     </div>
                   )}
 
-                  {/* Related Projects */}
-                  {!(activeSpeech?.messageId === msg.id && activeSpeech.status !== "finished") && msg.projects && msg.projects.length > 0 && (
-                    <div>
-                      <span
-                        className="text-[11px] font-bold uppercase tracking-wider block mb-2"
-                        style={{ color: "#9CA3AF" }}
-                      >
-                        Matching Evidence on the Ground:
-                      </span>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {msg.projects.map((proj) => (
-                          <div
-                            key={proj.id}
-                            className="rounded-xl p-3 flex flex-col justify-between shadow-xs"
-                            style={{
-                              backgroundColor: "white",
-                              border: "1px solid rgba(0,0,0,0.08)",
-                            }}
-                          >
-                            {proj.images?.[0] && (
-                              <>
-                                <img
-                                  src={proj.images[0]}
-                                  alt={proj.title}
-                                  className="w-full h-56 object-cover rounded-lg mb-2"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => setGalleryProject(proj)}
-                                  className="mb-3 w-full rounded-lg border px-3 py-2 text-xs font-semibold transition hover:bg-[#E8F5E9]"
-                                  style={{ borderColor: "rgba(6,130,55,0.3)", color: "#068237" }}
-                                >
-                                  View gallery
-                                </button>
-                              </>
-                            )}
-                            <div className="flex items-center justify-between text-[10px] font-semibold mb-1"
-                              style={{ color: "#D49308" }}>
-                              <span>{proj.category}</span>
-                              <span
-                                className="px-2 py-0.5 rounded-full text-[10px]"
-                                style={{
-                                  backgroundColor: proj.status === "Completed" ? "#E8F5E9" : "#FEF3C7",
-                                  color: proj.status === "Completed" ? "#068237" : "#92400E",
-                                }}
-                              >
-                                {proj.status}
-                              </span>
-                            </div>
-                            <h5
-                              className="text-xs font-bold mb-1"
-                              style={{ color: "#082C20" }}
-                            >
-                              {proj.title}
-                            </h5>
-                            <p className="text-[11px] line-clamp-2" style={{ color: "#6B7280" }}>
-                              {proj.description}
-                            </p>
-                            <div className="mt-2 pt-2 border-t text-[10px]" style={{ borderColor: "rgba(0,0,0,0.07)", color: "#9CA3AF" }}>
-                              <span>{proj.lgaName}</span>
-                            </div>
+                  {/* Verified Photo Evidence Gallery from Cloudinary */}
+                  {!(activeSpeech?.messageId === msg.id && activeSpeech.status !== "finished") &&
+                    msg.media &&
+                    Array.isArray(msg.media.images) &&
+                    msg.media.images.length > 0 && (
+                      <div className="rounded-xl border p-3.5" style={{ backgroundColor: "#FAF3EB", borderColor: "rgba(6,130,55,0.18)" }}>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-1.5">
+                            <span className="flex h-2 w-2 rounded-full bg-[#068237]" />
+                            <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "#068237" }}>
+                              Verified Field Evidence ({msg.media.images.length} Photos)
+                            </span>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {!(activeSpeech?.messageId === msg.id && activeSpeech.status !== "finished") && msg.suggestions && msg.suggestions.length > 0 && (
-                    <div className="pt-2">
-                      <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "#9CA3AF" }}>
-                        Continue the conversation
-                      </span>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {msg.suggestions.map((question) => (
                           <button
-                            key={question}
                             type="button"
-                            onClick={() => executeChat(question)}
-                            className="rounded-full border px-3.5 py-1.5 text-xs font-medium transition hover:border-[#068237] hover:text-[#068237] hover:bg-white shadow-2xs"
-                            style={{ backgroundColor: "rgba(255,255,255,0.72)", borderColor: "rgba(6,130,55,0.25)", color: "#082C20" }}
+                            onClick={() =>
+                              setGalleryProject({
+                                title: msg.media.title,
+                                description: msg.media.description,
+                                images: msg.media.images,
+                              })
+                            }
+                            className="rounded-full border px-3 py-1 text-xs font-semibold transition hover:bg-[#E8F5E9]"
+                            style={{ borderColor: "rgba(6,130,55,0.3)", color: "#068237", backgroundColor: "white" }}
                           >
-                            {question} →
+                            View all {msg.media.images.length} photos →
                           </button>
-                        ))}
+                        </div>
+                        <p className="text-xs mb-3 font-medium text-[#1F2C35]/80">
+                          {msg.media.title} — {msg.media.description}
+                        </p>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          {msg.media.images.slice(0, 4).map((imgUrl, imgIdx) => (
+                            <button
+                              key={imgUrl}
+                              type="button"
+                              onClick={() =>
+                                setGalleryProject({
+                                  title: msg.media.title,
+                                  description: msg.media.description,
+                                  images: msg.media.images,
+                                })
+                              }
+                              className="relative aspect-video w-full overflow-hidden rounded-lg group border shadow-2xs focus:outline-none focus:ring-2 focus:ring-[#068237]"
+                              style={{ borderColor: "rgba(0,0,0,0.08)" }}
+                            >
+                              <img
+                                src={imgUrl}
+                                alt={`${msg.media.title} photo ${imgIdx + 1}`}
+                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                loading="lazy"
+                              />
+                              {imgIdx === 3 && msg.media.images.length > 4 && (
+                                <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px] flex items-center justify-center text-white font-bold text-xs sm:text-sm">
+                                  +{msg.media.images.length - 4} more
+                                </div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+
+                  {!(activeSpeech?.messageId === msg.id && activeSpeech.status !== "finished") &&
+                    Array.isArray(msg.followUpQuestions) &&
+                    msg.followUpQuestions.length > 0 && (
+                      <div className="pt-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "#9CA3AF" }}>
+                          Continue the conversation
+                        </span>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {msg.followUpQuestions.map((question) => (
+                            <button
+                              key={question}
+                              type="button"
+                              onClick={() => executeChat(question)}
+                              className="rounded-full border px-3 py-1.5 text-xs font-medium transition hover:border-[#068237] hover:text-[#068237]"
+                              style={{ backgroundColor: "white", borderColor: "rgba(0,0,0,0.12)", color: "#374151" }}
+                            >
+                              {question}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     
                     
                     
@@ -756,38 +791,53 @@ function ChatContent() {
 
       {galleryProject && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 p-4"
           role="dialog"
           aria-modal="true"
           aria-label={`${galleryProject.title} gallery`}
           onClick={() => setGalleryProject(null)}
         >
           <div
-            className="relative w-full max-w-4xl rounded-2xl bg-white p-4 shadow-2xl"
+            className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="mb-3 flex items-start justify-between gap-4">
+            <div className="mb-4 flex items-start justify-between gap-4 border-b pb-3" style={{ borderColor: "rgba(0,0,0,0.08)" }}>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#068237" }}>Project gallery</p>
+                <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#068237" }}>
+                  Verified Field Gallery ({galleryProject.images?.length || 0} photos)
+                </p>
                 <h3 className="text-lg font-bold" style={{ color: "#082C20" }}>{galleryProject.title}</h3>
+                {galleryProject.description && (
+                  <p className="text-xs mt-1 text-[#1F2C35]/75 font-normal">{galleryProject.description}</p>
+                )}
               </div>
               <button
                 type="button"
                 onClick={() => setGalleryProject(null)}
-                className="rounded-full px-3 py-1.5 text-sm font-semibold"
+                className="rounded-full px-3.5 py-1.5 text-xs font-semibold transition hover:bg-gray-200"
                 style={{ backgroundColor: "#f3f4f6", color: "#1F2C35" }}
               >
-                Close
+                Close ✕
               </button>
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {galleryProject.images?.map((image, imageIndex) => (
-                <img
-                  key={image}
-                  src={image}
-                  alt={`${galleryProject.title} — image ${imageIndex + 1}`}
-                  className="h-72 w-full rounded-xl object-cover"
-                />
+                <div key={image} className="group relative overflow-hidden rounded-xl border" style={{ borderColor: "rgba(0,0,0,0.08)" }}>
+                  <img
+                    src={image}
+                    alt={`${galleryProject.title} — image ${imageIndex + 1}`}
+                    className="h-72 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <a
+                    href={image}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="absolute bottom-2 right-2 rounded-full bg-black/70 px-2.5 py-1 text-[11px] font-medium text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  >
+                    View Original ↗
+                  </a>
+                </div>
               ))}
             </div>
           </div>

@@ -293,7 +293,10 @@ export const PROJECTS = [
     contractor: "Enugu Basic Education Board (ENSPEB)",
     sourceDocument: "Enugu State Approved 2024 Capital Budget, Head 428B, Sub-head 12",
     description: "State-of-the-art interactive smart school equipped with fiber broadband, solar mini-grid, robotics lab, digital smartboards, and modern sanitation.",
-    images: ["https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920314/1H1A0613_omzzpx.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920311/1H1A0610_ymtx2w.jpg"
+    ],
     gapNote: "Operational guidelines released; third-party performance audit scheduled for Q3 2026."
   },
   {
@@ -309,7 +312,10 @@ export const PROJECTS = [
     contractor: "China Communication Construction Company (CCCC)",
     sourceDocument: "Ministry of Works & Infrastructure Medium Term Framework 2024-2026",
     description: "Dual 8-lane arterial expressway, underground storm drainage, ducting for 5G telecommunication networks, and high-voltage transmission lines spanning 10,000 hectares.",
-    images: ["https://images.unsplash.com/photo-1541888946425-d0fbb186156f?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920983/DJI_0205_fzaesv.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920981/DJI_0204_f0bes4.jpg"
+    ],
     gapNote: "Interim contractor payment certificates verified; Phase 1 asphalt laying is 68% complete."
   },
   {
@@ -325,7 +331,10 @@ export const PROJECTS = [
     contractor: "FordMarx Hydro Company Ltd",
     sourceDocument: "Enugu State Water Corporation Revitalization Gazette Vol. 33",
     description: "Installation of heavy-duty solar-powered industrial submersible pumps delivering 70 million liters daily from the 9th Mile aquifer into metropolitan reservoirs.",
-    images: ["https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921814/images_15_wmerk3.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921812/images_16_pope7k.jpg"
+    ],
     gapNote: "Primary trunk line pressure tests certified; neighborhood reticulation ongoing."
   },
   {
@@ -341,7 +350,10 @@ export const PROJECTS = [
     contractor: "State Universal Basic Education Board (SUBEB)",
     sourceDocument: "2024 Education Sector Performance Scorecard, Item 88",
     description: "Smart 25-classroom block featuring STEM interactive hardware, automated weather station, and clean water treatment facility.",
-    images: ["https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920308/1H1A0612_csqmtw.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920303/1H1A0607_w3lfam.jpg"
+    ],
     gapNote: "Civil works complete; deployment of computer terminals and solar battery banks in progress."
   },
   {
@@ -357,7 +369,10 @@ export const PROJECTS = [
     contractor: "Enugu Primary Healthcare Development Agency (ENPHCDA)",
     sourceDocument: "State Healthcare Revitalization Directive 2025/HQ",
     description: "20-bed maternal and infant care facility with solar cold-chain vaccine storage, diagnostic lab, staff quarters, and emergency dispatch.",
-    images: ["https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920837/DJI_0850_vkbqqw.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920831/DJI_0448_zg3tef.jpg"
+    ],
     gapNote: "Facility certified operational; pharmacy inventory restocking schedule is published monthly."
   },
   {
@@ -373,7 +388,10 @@ export const PROJECTS = [
     contractor: "Ministry of Culture & Tourism / Special Projects",
     sourceDocument: "Approved Supplementary Budget 2024, Schedule IV",
     description: "Rehabilitation and total completion of the landmark 3,000-seater auditorium, exhibition halls, VIP meeting rooms, and cultural pavilion.",
-    images: ["https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794646807/images_1_avzcvi.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921329/images_2_umulem.jpg"
+    ],
     gapNote: "Structural audit and fire safety certification verified in January 2026."
   },
   {
@@ -389,7 +407,10 @@ export const PROJECTS = [
     contractor: "Agro-Industrial Development Corp with AFEX",
     sourceDocument: "Enugu Agricultural Transformation Policy Paper (2024)",
     description: "Canal desilting, center-pivot irrigation systems, and construction of automated 100-ton daily parboiling and milling plant.",
-    images: ["https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921604/images_12_sgidya.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921602/images_13_pieejp.jpg"
+    ],
     gapNote: "Canal dredging 85% completed; milling machinery awaiting site electrical hookup."
   },
   {
@@ -405,7 +426,10 @@ export const PROJECTS = [
     contractor: "ENPHCDA & Local Government Council",
     sourceDocument: "Primary Healthcare Facilities Directory 2025",
     description: "Equipped with ultrasound imaging, solar power backup, labor ward, and digital record indexing.",
-    images: ["https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920824/DJI_0853_pmi1uw.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920821/DJI_0449_u7pif9.jpg"
+    ],
     gapNote: "Records show full staff deployment; solar battery inspection log current."
   },
   {
@@ -421,7 +445,10 @@ export const PROJECTS = [
     contractor: "IDC Construction Nigeria Ltd",
     sourceDocument: "Rural Access and Agricultural Marketing Project (RAAMP) Records",
     description: "14.2km asphalt road construction with concrete side drains and retaining walls along steep gradient terrain.",
-    images: ["https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920983/DJI_0205_fzaesv.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920981/DJI_0204_f0bes4.jpg"
+    ],
     gapNote: "Final engineering sign-off obtained; contractor maintenance warranty active."
   },
   {
@@ -437,7 +464,10 @@ export const PROJECTS = [
     contractor: "Ministry of Children, Gender Affairs and Social Development",
     sourceDocument: "2025 Special Intervention Fund Allocation, Gazette No. 14",
     description: "Dedicated learning center catering to special needs with speech therapy suites and vocational workshops.",
-    images: ["https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920291/1H1A0604_sjipva.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920276/1H1A0597_ywmt2d.jpg"
+    ],
     gapNote: "Roofing and plastering complete; specialized equipment procurement underway."
   },
   {
@@ -453,7 +483,10 @@ export const PROJECTS = [
     contractor: "Ministry of Agriculture and Agro-Allied Industrialization",
     sourceDocument: "State Agro-College Revitalization Plan 2024",
     description: "Greenhouses, drip-irrigation training fields, poultry demonstration hatcheries, and food processing laboratory.",
-    images: ["https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921601/images_14_gctolf.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921604/images_12_sgidya.jpg"
+    ],
     gapNote: "First cohort of 250 youth trainees graduated in April 2026."
   },
   {
@@ -469,7 +502,10 @@ export const PROJECTS = [
     contractor: "Enugu State Universal Basic Education Board",
     sourceDocument: "SUBEB Capital Projects Directory 2025",
     description: "25-classroom smart model block with solar power, computerized coding laboratory, and recreation fields.",
-    images: ["https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920275/1H1A0598_sslsws.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920274/1H1A0614_cqporn.jpg"
+    ],
     gapNote: "Foundation and structural pillars completed; roofing work active."
   },
   {
@@ -485,7 +521,10 @@ export const PROJECTS = [
     contractor: "ENPHCDA & Local Council",
     sourceDocument: "Urban Health Infrastructure Scorecard 2025",
     description: "Upgraded outpatient clinic with maternal ward, emergency treatment room, and 24-hour solar lighting.",
-    images: ["https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920686/homeoverviewimage-arbcmmkd_1_w3naaq.png",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920837/DJI_0850_vkbqqw.jpg"
+    ],
     gapNote: "Commissioned and active; serving over 1,500 monthly patient visits."
   },
   {
@@ -501,7 +540,10 @@ export const PROJECTS = [
     contractor: "CGC Nigeria Ltd",
     sourceDocument: "Ministry of Works Feeder Roads Initiative 2024",
     description: "11.8km paved asphalt road linking farming clusters directly with the major interstate transport corridor.",
-    images: ["https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920981/DJI_0204_f0bes4.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920983/DJI_0205_fzaesv.jpg"
+    ],
     gapNote: "Drainage inspection completed; post-rainy season pavement audit certified."
   },
   {
@@ -517,7 +559,10 @@ export const PROJECTS = [
     contractor: "Enugu Primary Healthcare Development Agency",
     sourceDocument: "Northern District Healthcare Investment Schedule 2025",
     description: "Full maternal clinic, solar vaccine refrigeration, pharmacy dispensary, and ambulance dispatch point.",
-    images: ["https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920824/DJI_0853_pmi1uw.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920831/DJI_0448_zg3tef.jpg"
+    ],
     gapNote: "Full medical staff deployed and verified by State Ministry of Health."
   },
   {
@@ -533,7 +578,10 @@ export const PROJECTS = [
     contractor: "China Civil Engineering Construction Corporation (CCECC)",
     sourceDocument: "Eastern Corridor Infrastructure Development Bill 2024",
     description: "Rehabilitation and total asphalt surfacing of the critical 18km commercial link road connecting farming communities.",
-    images: ["https://images.unsplash.com/photo-1541888946425-d0fbb186156f?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920983/DJI_0205_fzaesv.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921325/images_4_fhwyrf.jpg"
+    ],
     gapNote: "Earthworks and culvert construction completed; binder course laying underway."
   },
   {
@@ -549,7 +597,10 @@ export const PROJECTS = [
     contractor: "Enugu State Rural Electrification Board",
     sourceDocument: "Clean Energy Transition Gazette 2025",
     description: "500kW hybrid solar mini-grid supplying uninterrupted power to local markets, schools, and cottage processing facilities.",
-    images: ["https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921811/images_17_szvqth.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921814/images_15_wmerk3.jpg"
+    ],
     gapNote: "Operational metering installed; power distribution active across 450 households."
   },
   {
@@ -565,7 +616,10 @@ export const PROJECTS = [
     contractor: "ENPHCDA & Community Development Union",
     sourceDocument: "Primary Healthcare Facilities Directory 2025",
     description: "Comprehensive maternal healthcare unit, pediatric immunizations, solar water borehole, and clean delivery rooms.",
-    images: ["https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80"],
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920821/DJI_0449_u7pif9.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920837/DJI_0850_vkbqqw.jpg"
+    ],
     gapNote: "Fully certified by State Ministry of Health; weekly antenatal clinic schedule active."
   }
 ];
