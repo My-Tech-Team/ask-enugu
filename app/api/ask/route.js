@@ -1,6 +1,6 @@
 import { getOfficialSourceContext } from "../../../lib/official-sources.js";
 import { searchLocalKnowledge } from "../../../lib/local-knowledge.js";
-import { getRelevantMedia, getMatchingProjects } from "../../../lib/cloudinary-media.js";
+import { getRelevantMedia, getMediaBySector, getMatchingProjects } from "../../../lib/cloudinary-media.js";
 
 const cleanAnswerText = (text) => {
   if (typeof text !== "string") return text;
@@ -123,10 +123,7 @@ export async function POST(req) {
       : "";
 
     const localRecords = searchLocalKnowledge(query);
-    const [liveSources, mediaGallery] = await Promise.all([
-      getOfficialSourceContext(query),
-      getRelevantMedia(query, localRecords),
-    ]);
+    const liveSources = await getOfficialSourceContext(query);
 
     const localRecordContext = localRecords.length
       ? localRecords.map((r) => `DOCUMENT / POLICY: ${r.sourceName}\n${r.content}`).join("\n\n---\n\n")
@@ -182,10 +179,21 @@ You must reply ONLY in valid JSON format with the following keys:
   "followUpQuestions": [
     "2 to 3 natural, highly relevant follow-up questions the user would realistically ask next based directly on this specific answer and context."
   ],
+  "showMediaSector": null,
   "sources": [],
   "evidenceGap": "Explicit statement of what is or isn't verified in the records.",
   "relatedProjectIds": []
 }
+
+MEDIA ATTACHMENT RULES FOR 'showMediaSector':
+- Default is strictly null.
+- ONLY return one of ["smart-school", "roads", "hospital", "terminal", "security", "water", "agriculture"] if the user's question directly and specifically asks about physical facilities, infrastructure, construction sites, equipment, or photos in that sector (e.g., asking about Smart Green Schools, flyovers, roads, bus terminals, hospitals/PHCs, security patrol vehicles, water schemes, or tractors/farming).
+- If the user is asking about:
+  * Contact information, phone numbers, emails, addresses, or public information officers
+  * Laws, policies, administration, or governance
+  * Taxes, levies, rates, or payment procedures
+  * Citizen guidelines, general inquiries, definitions, or non-physical matters
+  You MUST set "showMediaSector": null. Under no circumstances should photos be attached to questions about contacts, taxes, policies, or general advice.
 `;
 
     // Prioritized model chain: if one model encounters high demand (503) or rate limits (429), immediately try the next
@@ -227,6 +235,17 @@ You must reply ONLY in valid JSON format with the following keys:
               const followUpQuestions = Array.isArray(parsed.followUpQuestions) && parsed.followUpQuestions.length
                 ? parsed.followUpQuestions.map(cleanAnswerText).filter((q) => typeof q === "string" && q.trim().length > 8).slice(0, 3)
                 : generateFallbackFollowUps(query, localRecords);
+
+              let mediaGallery = null;
+              const validSectors = ["smart-school", "roads", "hospital", "terminal", "security", "water", "agriculture"];
+              if (parsed.showMediaSector && typeof parsed.showMediaSector === "string") {
+                const reqSector = parsed.showMediaSector.trim().toLowerCase();
+                if (validSectors.includes(reqSector)) {
+                  mediaGallery = await getMediaBySector(reqSector);
+                }
+              } else if (parsed.showMediaSector === undefined) {
+                mediaGallery = await getRelevantMedia(query);
+              }
 
               return Response.json({
                 summary: cleanAnswerText(parsed.summary),
@@ -278,13 +297,15 @@ You must reply ONLY in valid JSON format with the following keys:
       gapNote = "No official source could be retrieved for this question.";
     }
 
+    const fallbackMedia = await getRelevantMedia(query);
+
     return Response.json({
       summary: cleanAnswerText(summaryText),
       followUpQuestions: generateFallbackFollowUps(query, localRecords),
       sources: [],
       evidenceGap: cleanAnswerText(gapNote),
       projects: [],
-      media: mediaGallery || null,
+      media: fallbackMedia || null,
     });
   } catch (error) {
     console.error("AskEnugu Route Error:", error);

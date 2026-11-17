@@ -377,22 +377,22 @@ export const PROJECTS = [
   },
   {
     id: "prj-006",
-    title: "International Conference Centre (ICC) Completion",
-    category: "Commerce & Tourism",
+    title: "Holy Ghost Modern Transport Terminal & Central Interchange",
+    category: "Transport Infrastructure",
     lgaId: "enugu-north",
     lgaName: "Enugu North",
-    ward: "Independence Layout",
-    coordinates: [7.5021, 6.4389],
-    status: "Completed",
-    budget: "₦6,200,000,000",
-    contractor: "Ministry of Culture & Tourism / Special Projects",
-    sourceDocument: "Approved Supplementary Budget 2024, Schedule IV",
-    description: "Rehabilitation and total completion of the landmark 3,000-seater auditorium, exhibition halls, VIP meeting rooms, and cultural pavilion.",
+    ward: "Ogbete & Holy Ghost Ward",
+    coordinates: [7.4812, 6.4312],
+    status: "Ongoing",
+    budget: "₦5,400,000,000",
+    contractor: "Ministry of Transport / Infrastructure Development",
+    sourceDocument: "Enugu Transport Modernization Gazette 2025",
+    description: "Ultra-modern central bus and transit interchange terminal at Holy Ghost / Ogbete, featuring passenger concourses, multi-level bays, automated ticketing, and logistics hub.",
     images: [
-      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794646807/images_1_avzcvi.jpg",
-      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921329/images_2_umulem.jpg"
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921329/images_2_umulem.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921328/images_3_w2yxwj.jpg"
     ],
-    gapNote: "Structural audit and fire safety certification verified in January 2026."
+    gapNote: "Civil foundation and terminal steel framing actively in progress."
   },
   {
     id: "prj-007",
@@ -580,7 +580,7 @@ export const PROJECTS = [
     description: "Rehabilitation and total asphalt surfacing of the critical 18km commercial link road connecting farming communities.",
     images: [
       "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920983/DJI_0205_fzaesv.jpg",
-      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794921325/images_4_fhwyrf.jpg"
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920981/DJI_0204_f0bes4.jpg"
     ],
     gapNote: "Earthworks and culvert construction completed; binder course laying underway."
   },
@@ -621,33 +621,252 @@ export const PROJECTS = [
       "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920837/DJI_0850_vkbqqw.jpg"
     ],
     gapNote: "Fully certified by State Ministry of Health; weekly antenatal clinic schedule active."
+  },
+  {
+    id: "prj-019",
+    title: "Government Technical College (GTC) Smart Vocational Pilot",
+    category: "Education",
+    lgaId: "enugu-north",
+    lgaName: "Enugu North",
+    ward: "Coal Camp / GRA Ward",
+    coordinates: [7.4812, 6.4312],
+    status: "Completed",
+    budget: "₦1,450,000,000",
+    contractor: "Ministry of Education & Special Projects",
+    sourceDocument: "Enugu Technical Education Revitalization Plan 2025",
+    description: "Model technical and vocational smart pilot institution featuring modern engineering workshops, solar power, digital training labs, and interactive classrooms.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920314/1H1A0613_omzzpx.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920311/1H1A0610_ymtx2w.jpg"
+    ],
+    gapNote: "Commissioned by the First Lady on 9 June 2025; technical accreditation verified."
+  },
+  {
+    id: "prj-020",
+    title: "Enugu South Smart Green School Campus",
+    category: "Education",
+    lgaId: "enugu-south",
+    lgaName: "Enugu South",
+    ward: "Uwani Central Ward",
+    coordinates: [7.5135, 6.4182],
+    status: "Ongoing",
+    budget: "₦1,180,000,000",
+    contractor: "State Universal Basic Education Board (ENSPEB)",
+    sourceDocument: "SUBEB Capital Investment Rollout 2025",
+    description: "Modernized 25-classroom smart green school block with digital interactive smartboards, solar power backup, clean water reticulation, and ICT computer hub.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920309/1H1A0611_ra3udk.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920308/1H1A0612_csqmtw.jpg"
+    ],
+    gapNote: "Classroom superstructure complete; solar mini-grid installation in progress."
+  },
+  {
+    id: "prj-021",
+    title: "Enugu East Smart Green School Model",
+    category: "Education",
+    lgaId: "enugu-east",
+    lgaName: "Enugu East",
+    ward: "Ibagwa Nike / Ugbo Odogwu",
+    coordinates: [7.5912, 6.5214],
+    status: "Completed",
+    budget: "₦1,220,000,000",
+    contractor: "Universal Basic Education Commission (UBEC) & ENSPEB",
+    sourceDocument: "State Universal Basic Education Project Directory 2025",
+    description: "Commissioned Smart Green School campuses at Ugbo Odogwu, Ibagwa Nike, Airport, and Amankpaka Nike with ICT labs, e-libraries, and solar power.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920303/1H1A0607_w3lfam.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920291/1H1A0604_sjipva.jpg"
+    ],
+    gapNote: "Commissioned in November 2026; experiential learning curriculum active."
+  },
+  {
+    id: "prj-022",
+    title: "Udi Smart Green School Campus",
+    category: "Education",
+    lgaId: "udi",
+    lgaName: "Udi",
+    ward: "Ngwo / 9th Mile Ward",
+    coordinates: [7.4321, 6.4389],
+    status: "Completed",
+    budget: "₦1,230,000,000",
+    contractor: "ENSPEB & Special Projects Unit",
+    sourceDocument: "Approved 2025 Education Capital Gazette",
+    description: "Fully equipped smart school model with solar mini-grid, digitalized classrooms, e-library, robotics lab, and experiential learning facilities.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920276/1H1A0597_ywmt2d.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920275/1H1A0598_sslsws.jpg"
+    ],
+    gapNote: "Commissioned in January 2025 among first cohort of 30 operational schools."
+  },
+  {
+    id: "prj-023",
+    title: "Ezeagu Smart Green School Model",
+    category: "Education",
+    lgaId: "ezeagu",
+    lgaName: "Ezeagu",
+    ward: "Iwollo Ward",
+    coordinates: [7.2812, 6.4214],
+    status: "Ongoing",
+    budget: "₦1,140,000,000",
+    contractor: "ENSPEB & Local Council",
+    sourceDocument: "Approved Capital Budget 2025",
+    description: "Solar-powered smart green school facility featuring experiential STEM laboratories, robotics workstation, smartboards, and hygienic sanitation blocks.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920274/1H1A0614_cqporn.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920271/1H1A0596_rgzone.jpg"
+    ],
+    gapNote: "Roofing and wall plastering completed; digital smartboard delivery underway."
+  },
+  {
+    id: "prj-024",
+    title: "Awgu Smart Green School & College of Nursing Modernization",
+    category: "Education",
+    lgaId: "awgu",
+    lgaName: "Awgu",
+    ward: "Awgu Urban / Isuawa",
+    coordinates: [7.4812, 6.0689],
+    status: "Ongoing",
+    budget: "₦980,000,000",
+    contractor: "Enugu Basic Education Board & Ministry of Education",
+    sourceDocument: "Enugu State Approved Capital Budget, Education Sector",
+    description: "Interactive Smart Green School campus with computer laboratories and state nursing college modernization supported with digital learning tools.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920271/1H1A0599_rigjua.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920264/1H1A0603_nxdk6k.jpg"
+    ],
+    gapNote: "Health college equipment received from WHO partners in November 2025."
+  },
+  {
+    id: "prj-025",
+    title: "Aninri Smart Green School Campuses (Nenwe)",
+    category: "Education",
+    lgaId: "aninri",
+    lgaName: "Aninri",
+    ward: "Aninri West / Nenwe Ward",
+    coordinates: [7.5891, 6.0234],
+    status: "Completed",
+    budget: "₦1,150,000,000",
+    contractor: "Enugu State Universal Basic Education Board (ENSPEB)",
+    sourceDocument: "Enugu State Education Sector Implementation Gazettes 2024-2026",
+    description: "Commissioned Amorji, Uhueze, and Agbada Smart Green School campuses featuring 25 interactive digital classrooms, solar power mini-grid, robotics lab, and modern sanitation.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920314/1H1A0613_omzzpx.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920308/1H1A0612_csqmtw.jpg"
+    ],
+    gapNote: "Commissioned in November 2026; pupils enrolled and receiving free uniforms."
+  },
+  {
+    id: "prj-026",
+    title: "Obollo-Afor Smart Green School Model",
+    category: "Education",
+    lgaId: "udenu",
+    lgaName: "Udenu",
+    ward: "Obollo-Afor Central",
+    coordinates: [7.5145, 6.9234],
+    status: "Completed",
+    budget: "₦1,200,000,000",
+    contractor: "State Universal Basic Education Board",
+    sourceDocument: "Education Sector Scorecard 2025",
+    description: "One of the commissioned flagship smart schools in the Northern zone featuring solar power, interactive smartboards, ICT lab, and sports facilities.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920311/1H1A0610_ymtx2w.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920309/1H1A0611_ra3udk.jpg"
+    ],
+    gapNote: "Commissioned in January 2025; digital classes and e-learning active."
+  },
+  {
+    id: "prj-027",
+    title: "Igbo-Etiti Smart Green School Model",
+    category: "Education",
+    lgaId: "igbo-etiti",
+    lgaName: "Igbo-Etiti",
+    ward: "Ogbede / Aku Ward",
+    coordinates: [7.3712, 6.7123],
+    status: "Ongoing",
+    budget: "₦1,160,000,000",
+    contractor: "State Universal Basic Education Board",
+    sourceDocument: "Enugu North Senatorial District Education Framework",
+    description: "25-classroom smart block equipped with solar mini-grid, computer laboratories, clean water borehole, and interactive learning infrastructure.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920303/1H1A0607_w3lfam.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920276/1H1A0597_ywmt2d.jpg"
+    ],
+    gapNote: "Civil works near completion; solar panels and smartboards mounted."
+  },
+  {
+    id: "prj-028",
+    title: "Enugu-Ezike Smart Green School Model",
+    category: "Education",
+    lgaId: "igbo-eze-north",
+    lgaName: "Igbo-Eze North",
+    ward: "Umuogbo / Umuida Ward",
+    coordinates: [7.4523, 7.0123],
+    status: "Ongoing",
+    budget: "₦1,190,000,000",
+    contractor: "ENSPEB & Rural Education Development Unit",
+    sourceDocument: "Northern Education Infrastructure Schedule 2025",
+    description: "Smart Green School facility equipped with digital classrooms, broadband connectivity, automated weather monitoring, and solar installations.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920291/1H1A0604_sjipva.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920275/1H1A0598_sslsws.jpg"
+    ],
+    gapNote: "Superstructure complete across Umuogbo and Umuida campus sites."
+  },
+  {
+    id: "prj-029",
+    title: "Ibagwa-Aka Smart Green School Model",
+    category: "Education",
+    lgaId: "igbo-eze-south",
+    lgaName: "Igbo-Eze South",
+    ward: "Ibagwa-Aka Central",
+    coordinates: [7.3512, 6.9621],
+    status: "Ongoing",
+    budget: "₦1,150,000,000",
+    contractor: "State Universal Basic Education Board",
+    sourceDocument: "State Universal Basic Education Directory",
+    description: "Equipped with interactive smartboards, 24/7 solar power, experiential science laboratory, and modern teacher quarters.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920274/1H1A0614_cqporn.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920271/1H1A0596_rgzone.jpg"
+    ],
+    gapNote: "Structural testing verified; interior wiring and networking underway."
+  },
+  {
+    id: "prj-030",
+    title: "Isi-Uzo Reinforced Smart Green School",
+    category: "Education",
+    lgaId: "isi-uzo",
+    lgaName: "Isi-Uzo",
+    ward: "Mbu / Ikem Ward",
+    coordinates: [7.7123, 6.7823],
+    status: "Ongoing",
+    budget: "₦1,210,000,000",
+    contractor: "Ministry of Works & ENSPEB Engineering Team",
+    sourceDocument: "Quality Assurance & Structural Audit Reports 2025",
+    description: "Structurally reinforced smart green school campus rebuilt to rigorous engineering standards with solar power, modern classrooms, and computer lab.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920271/1H1A0599_rigjua.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920264/1H1A0603_nxdk6k.jpg"
+    ],
+    gapNote: "Reconstruction taking place under direct Ministry of Works engineering oversight."
+  },
+  {
+    id: "prj-031",
+    title: "Adani Smart Green School Model",
+    category: "Education",
+    lgaId: "uzo-uwani",
+    lgaName: "Uzo-Uwani",
+    ward: "Adani Ward",
+    coordinates: [7.0214, 6.7412],
+    status: "Ongoing",
+    budget: "₦1,170,000,000",
+    contractor: "State Universal Basic Education Board",
+    sourceDocument: "Agricultural & Rural Education Plan 2025",
+    description: "Smart Green School with specialized agro-science demonstration units, solar power, fiber broadband, and digital learning tools.",
+    images: [
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920314/1H1A0613_omzzpx.jpg",
+      "https://res.cloudinary.com/zl99z5t1/image/upload/v1794920291/1H1A0604_sjipva.jpg"
+    ],
+    gapNote: "Classroom blocks roofed; smart farm plots mapped out for practical science."
   }
 ];
-
-// Local photographs supplied for the AskEnugu gallery. The source folder did
-// not identify a project for each file, so these are initially distributed in
-// project order and can be adjusted when the project-photo mapping is confirmed.
-const LOCAL_PROJECT_GALLERIES = {
-  "prj-001": ["/gallery/1H1A0596.JPG", "/gallery/1H1A0597.JPG"],
-  "prj-002": ["/gallery/1H1A0598.JPG", "/gallery/1H1A0599.JPG"],
-  "prj-003": ["/gallery/1H1A0603.JPG", "/gallery/1H1A0604.JPG"],
-  "prj-004": ["/gallery/1H1A0606.JPG", "/gallery/1H1A0607.JPG"],
-  "prj-005": ["/gallery/1H1A0610.JPG", "/gallery/1H1A0611.JPG"],
-  "prj-006": ["/gallery/1H1A0612.JPG", "/gallery/1H1A0613.JPG"],
-  "prj-007": ["/gallery/1H1A0614.JPG", "/gallery/DJI_0032.JPG"],
-  "prj-008": ["/gallery/DJI_0040.JPG", "/gallery/DJI_0140 - Copy.JPG"],
-  "prj-009": ["/gallery/DJI_0140.JPG", "/gallery/DJI_0144 - Copy.JPG"],
-  "prj-010": ["/gallery/DJI_0149 - Copy.JPG", "/gallery/DJI_0201.JPG"],
-  "prj-011": ["/gallery/DJI_0202.JPG", "/gallery/DJI_0203.JPG"],
-  "prj-012": ["/gallery/DJI_0204.JPG"],
-  "prj-013": ["/gallery/DJI_0205.JPG"],
-  "prj-014": ["/gallery/DJI_0208.JPG"],
-  "prj-015": ["/gallery/174A6340.jpg"],
-  "prj-016": ["/gallery/174A6341.jpg"],
-  "prj-017": ["/gallery/174A6362.jpg"],
-  "prj-018": ["/gallery/174A6449.jpg"],
-};
-
-PROJECTS.forEach((project) => {
-  project.images = LOCAL_PROJECT_GALLERIES[project.id] || project.images;
-});

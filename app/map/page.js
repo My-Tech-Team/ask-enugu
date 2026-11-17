@@ -12,6 +12,61 @@ const ENUGU_BOUNDS = [
   [7.9, 7.18],
 ];
 
+function getProjectHighlights(proj) {
+  if (Array.isArray(proj.features) && proj.features.length > 0) {
+    return proj.features;
+  }
+  const cat = (proj.category || "").toLowerCase();
+  const title = (proj.title || "").toLowerCase();
+
+  if (cat.includes("education") || title.includes("school") || title.includes("college")) {
+    return [
+      "Interactive digital smartboards with computerized STEM curriculum",
+      "24/7 dedicated solar power mini-grid with continuous electricity and water",
+      "Robotics, coding, and science experiential learning laboratories",
+      "Hygienic modern sanitation facilities and secured school campus",
+    ];
+  }
+  if (cat.includes("health") || title.includes("hospital") || title.includes("clinic")) {
+    return [
+      "24-hour maternal, neonatal, and primary outpatient medical care",
+      "Solar-powered cold-chain refrigeration for vaccines and essential medicines",
+      "Diagnostics laboratory with ultrasound imaging and digital record indexing",
+      "Emergency ambulance dispatch support and resident healthcare staff",
+    ];
+  }
+  if (cat.includes("terminal") || title.includes("terminal") || title.includes("interchange")) {
+    return [
+      "Modern passenger boarding concourses and multi-level bus bays",
+      "Centralized electronic ticketing system eliminating cash touting",
+      "Integrated 24/7 CCTV security surveillance and logistics facilities",
+      "Organized transit links serving inter-state and intra-city commuter lines",
+    ];
+  }
+  if (cat.includes("water") || title.includes("water") || title.includes("grid")) {
+    return [
+      "Heavy-duty industrial solar-powered submersible pumping scheme",
+      "Regional reticulation pipelines connecting direct to community taps",
+      "High-capacity storage reservoirs ensuring 24/7 municipal water supply",
+      "Automated pressure testing and water purification filtration systems",
+    ];
+  }
+  if (cat.includes("agric") || title.includes("farm") || title.includes("rice")) {
+    return [
+      "Subsidized tractor mechanization for local smallholder farming cooperatives",
+      "All-season irrigation canal dredging and center-pivot watering systems",
+      "Automated parboiling, milling, and commercial agro-processing plants",
+      "Direct off-take logistics linking farm harvests to statewide markets",
+    ];
+  }
+  return [
+    "Dualized heavy-duty asphalt pavement built to high-durability highway standards",
+    "Reinforced concrete side drainage and erosion-control retaining walls",
+    "Solar-powered LED streetlighting along transit and commercial corridors",
+    "Direct economic link interconnecting rural farming clusters with major urban markets",
+  ];
+}
+
 export default function FullMapPage() {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -20,6 +75,8 @@ export default function FullMapPage() {
   const [selectedLga, setSelectedLga] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [mapReady, setMapReady] = useState(false);
   const [proofProject, setProofProject] = useState(null);
 
@@ -30,11 +87,23 @@ export default function FullMapPage() {
   }, [selectedLga]);
 
   const filteredProjects = useMemo(() => {
-    if (selectedCategory === "all") return lgaProjects;
-    return lgaProjects.filter((p) =>
-      p.category.toLowerCase().includes(selectedCategory.toLowerCase())
-    );
-  }, [lgaProjects, selectedCategory]);
+    const query = searchQuery.trim().toLowerCase();
+    return lgaProjects.filter((project) => {
+      const matchesCategory = selectedCategory === "all" ||
+        project.category.toLowerCase().includes(selectedCategory.toLowerCase());
+      const matchesStatus = selectedStatus === "all" || project.status === selectedStatus;
+      const matchesSearch = !query || [project.title, project.category, project.ward, project.description]
+        .join(" ")
+        .toLowerCase()
+        .includes(query);
+      return matchesCategory && matchesStatus && matchesSearch;
+    });
+  }, [lgaProjects, searchQuery, selectedCategory, selectedStatus]);
+
+  const categories = useMemo(
+    () => ["all", ...new Set(lgaProjects.map((project) => project.category))],
+    [lgaProjects]
+  );
 
   /* ── Bootstrap Mapbox ── */
   useEffect(() => {
@@ -116,6 +185,11 @@ export default function FullMapPage() {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [selectedLga]);
 
+  useEffect(() => {
+    if (!selectedLga || !mapInstanceRef.current) return;
+    placeProjectPins(mapInstanceRef.current, selectedLga, filteredProjects);
+  }, [filteredProjects, selectedLga]);
+
   /* ── Pin helpers ── */
   function placeAllLgaPins(map) {
     const mapboxgl = window.mapboxgl;
@@ -185,12 +259,12 @@ export default function FullMapPage() {
     });
   }
 
-  function placeProjectPins(map, lga) {
+  function placeProjectPins(map, lga, projects = PROJECTS.filter((p) => p.lgaId === lga.id)) {
     const mapboxgl = window.mapboxgl;
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
 
-    PROJECTS.filter((p) => p.lgaId === lga.id).forEach((proj) => {
+    projects.forEach((proj) => {
       const el = document.createElement("div");
       el.style.cssText =
         "cursor:pointer;display:flex;flex-direction:column;align-items:center;pointer-events:auto;user-select:none;";
@@ -265,6 +339,8 @@ export default function FullMapPage() {
     setSelectedLga(lga);
     setSelectedProject(null);
     setSelectedCategory("all");
+    setSelectedStatus("all");
+    setSearchQuery("");
     const map = mapInstanceRef.current;
     if (!map) return;
     map.flyTo({ center: lga.center, zoom: lga.zoom || 12.2, duration: 900 });
@@ -275,6 +351,8 @@ export default function FullMapPage() {
     setSelectedLga(null);
     setSelectedProject(null);
     setSelectedCategory("all");
+    setSelectedStatus("all");
+    setSearchQuery("");
     const map = mapInstanceRef.current;
     if (!map) return;
     map.fitBounds(ENUGU_BOUNDS, { padding: 50, duration: 900 });
@@ -284,10 +362,13 @@ export default function FullMapPage() {
   return (
     <div className="map-page mt-20 md:mt-20" style={{ height: "calc(100dvh - 64px)", display: "flex", flexDirection: "column", overflow: "hidden", background: "white" }}>
 
-      <section className="map-hero " style={{ flexShrink: 0, padding: "16px 24px", background: "#ffff", borderBottom: "1px solid #cfe6d3" }}>
-        <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#068237" }}>Explore Enugu State</p>
-        <h1 style={{ margin: "4px 0 3px", fontSize: 22, lineHeight: 1.2, color: "#082C20" }}>Find records across all 17 LGAs</h1>
-        <p style={{ margin: 0, fontSize: 13, color: "#4B5563" }}>Select an area to explore available projects and public records.</p>
+      <section className="map-hero" style={{ flexShrink: 0, padding: "16px 24px", background: "#ffff", borderBottom: "1px solid #cfe6d3", display: "flex", gap: 16, alignItems: "end", justifyContent: "space-between" }}>
+        <div>
+          <p style={{ margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#068237" }}>Explore Enugu State</p>
+          <h1 style={{ margin: "4px 0 3px", fontSize: 22, lineHeight: 1.2, color: "#082C20" }}>Find records across all 17 Local Government Areas</h1>
+          <p style={{ margin: 0, fontSize: 13, color: "#4B5563" }}>Choose an area, filter its projects, and open the available proof in one place.</p>
+        </div>
+       
       </section>
 
       {/* ── LGA TAB STRIP ── */}
@@ -319,7 +400,7 @@ export default function FullMapPage() {
                 background: isSelected ? "rgba(255,255,255,0.22)" : "#E5E7EB",
                 color: isSelected ? "white" : "#6B7280", fontWeight: 600,
               }}>
-                {lga.stats?.projectsCount ?? PROJECTS.filter(p => p.lgaId === lga.id).length}
+                {PROJECTS.filter((p) => p.lgaId === lga.id).length}
               </span>
             </button>
           );
@@ -372,7 +453,7 @@ export default function FullMapPage() {
               </span>
               <span style={{ fontSize: 11, fontWeight: 700, color: "#082C20" }}>
                 {selectedLga
-                  ? `${selectedLga.name} — ${filteredProjects.length} Evidence Records`
+                  ? `${selectedLga.name} — ${filteredProjects.length} project record${filteredProjects.length === 1 ? "" : "s"}`
                   : "Enugu State — All 17 Local Government Areas"}
               </span>
             </div>
@@ -414,7 +495,7 @@ export default function FullMapPage() {
                 </button>
               </div>
               <h2 style={{ fontSize: 18, fontWeight: 800, color: "#082C20", margin: "4px 0 2px" }}>
-                {selectedLga.name} Evidence Records
+                {selectedLga.name} Project Explorer
               </h2>
               <div style={{ fontSize: 11, color: "#9CA3AF", display: "flex", gap: 8 }}>
                 <span>HQ: <strong style={{ color: "#6B7280" }}>{selectedLga.hq}</strong></span>
@@ -422,12 +503,23 @@ export default function FullMapPage() {
                 <span>{lgaProjects.length} Projects Tracked</span>
               </div>
 
+              <div style={{ marginTop: 12, position: "relative" }}>
+                <span aria-hidden="true" style={{ position: "absolute", left: 11, top: 9, color: "#9CA3AF", fontSize: 14 }}>⌕</span>
+                <input
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Search a project, community, or sector"
+                  aria-label="Search project records"
+                  style={{ width: "100%", boxSizing: "border-box", border: "1px solid #D1D5DB", borderRadius: 9, padding: "9px 11px 9px 30px", fontSize: 12, color: "#082C20", outlineColor: "#068237" }}
+                />
+              </div>
+
               {/* Category filter */}
               <div style={{
                 display: "flex", gap: 6, marginTop: 10, overflowX: "auto",
                 scrollbarWidth: "none", paddingBottom: 2,
               }}>
-                {["all", "Education", "Healthcare", "Infrastructure", "Water", "Agriculture"].map((cat) => (
+                {categories.map((cat) => (
                   <button key={cat} onClick={() => setSelectedCategory(cat)} style={{
                     fontSize: 11, padding: "3px 10px", borderRadius: 6, whiteSpace: "nowrap",
                     border: `1px solid ${selectedCategory === cat ? "#082C20" : "#e5e7eb"}`,
@@ -440,13 +532,27 @@ export default function FullMapPage() {
                   </button>
                 ))}
               </div>
+              <div style={{ display: "flex", gap: 6, marginTop: 7, overflowX: "auto", scrollbarWidth: "none" }}>
+                {["all", "Ongoing", "Completed"].map((status) => (
+                  <button key={status} onClick={() => setSelectedStatus(status)} style={{
+                    fontSize: 11, padding: "3px 10px", borderRadius: 999, whiteSpace: "nowrap",
+                    border: `1px solid ${selectedStatus === status ? "#068237" : "#e5e7eb"}`,
+                    background: selectedStatus === status ? "#E8F5E9" : "white",
+                    color: selectedStatus === status ? "#068237" : "#6B7280",
+                    fontWeight: selectedStatus === status ? 700 : 500, cursor: "pointer",
+                  }}>
+                    {status === "all" ? "Any status" : status}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Scrollable project cards */}
             <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px" }}>
               {filteredProjects.length === 0 ? (
-                <div style={{ textAlign: "center", color: "#9CA3AF", fontSize: 12, paddingTop: 48 }}>
-                  No projects found for this filter in {selectedLga.name}.
+                <div style={{ textAlign: "center", color: "#6B7280", fontSize: 12, paddingTop: 48 }}>
+                  <strong style={{ display: "block", color: "#082C20", marginBottom: 6 }}>No matching project records</strong>
+                  Try a different search, sector, or status in {selectedLga.name}.
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -463,18 +569,36 @@ export default function FullMapPage() {
                         boxShadow: isSelected ? "0 0 0 3px rgba(6,130,55,0.12)" : "0 1px 4px rgba(0,0,0,0.05)",
                         transition: "all 0.15s",
                       }}>
-                        {/* Photo */}
-                        {proj.images?.[0] && (
-                          <div style={{ width: "100%", height: 320, borderRadius: 10, overflow: "hidden", marginBottom: 10, position: "relative" }}>
-                            <img src={proj.images[0]} alt={proj.title}
-                              style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        {/* Photo Display (Up to 2 images) */}
+                        {proj.images?.length > 1 ? (
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, height: 180, borderRadius: 10, overflow: "hidden", marginBottom: 10, position: "relative" }}>
+                            {proj.images.slice(0, 2).map((img, idx) => (
+                              <img
+                                key={img}
+                                src={img}
+                                alt={`${proj.title} photo ${idx + 1}`}
+                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                loading="lazy"
+                              />
+                            ))}
                             <span style={{
                               position: "absolute", bottom: 6, right: 6,
-                              background: "rgba(0,0,0,0.6)", color: "white",
+                              background: "rgba(0,0,0,0.65)", color: "white",
+                              fontSize: 9, padding: "2px 7px", borderRadius: 4, fontWeight: 600,
+                            }}>2 Verified Photos</span>
+                          </div>
+                        ) : proj.images?.[0] ? (
+                          <div style={{ width: "100%", height: 220, borderRadius: 10, overflow: "hidden", marginBottom: 10, position: "relative" }}>
+                            <img src={proj.images[0]} alt={proj.title}
+                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              loading="lazy" />
+                            <span style={{
+                              position: "absolute", bottom: 6, right: 6,
+                              background: "rgba(0,0,0,0.65)", color: "white",
                               fontSize: 9, padding: "2px 7px", borderRadius: 4, fontWeight: 600,
                             }}>Verified Site Photo</span>
                           </div>
-                        )}
+                        ) : null}
                         {((proj.images?.length || 0) + (proj.videos?.length || 0)) > 0 && (
                           <button
                             type="button"
@@ -490,13 +614,16 @@ export default function FullMapPage() {
                           <span style={{ fontSize: 10, fontWeight: 700, color: "#E8A812", textTransform: "uppercase", letterSpacing: "0.07em" }}>
                             {proj.category}
                           </span>
-                          <span style={{
-                            fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999,
-                            background: proj.status === "Completed" ? "#E8F5E9" : "#FEF3C7",
-                            color: proj.status === "Completed" ? "#068237" : "#92400E",
-                          }}>
-                            ● {proj.status}
-                          </span>
+                          <div style={{ display: "flex", gap: 5 }}>
+                            <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 999, background: "#F3F4F6", color: "#6B7280" }}>Preview</span>
+                            <span style={{
+                              fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999,
+                              background: proj.status === "Completed" ? "#E8F5E9" : "#FEF3C7",
+                              color: proj.status === "Completed" ? "#068237" : "#92400E",
+                            }}>
+                              ● {proj.status}
+                            </span>
+                          </div>
                         </div>
 
                         <h3 style={{ fontSize: 14, fontWeight: 800, color: "#082C20", margin: "0 0 4px", lineHeight: 1.3 }}>
@@ -509,41 +636,40 @@ export default function FullMapPage() {
                           {proj.description}
                         </p>
 
-                        {/* Budget grid */}
+                        {/* Key Facilities & Deliverables */}
                         <div style={{
-                          display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8,
-                          background: "#F9FAFB", borderRadius: 10, padding: 10,
-                          border: "1px solid #F3F4F6", marginBottom: 10, fontSize: 11,
+                          background: "#F9FAFB", borderRadius: 10, padding: "11px 13px",
+                          border: "1px solid #E5E7EB", marginBottom: 12,
                         }}>
-                          <div>
-                            <span style={{ fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", fontWeight: 700, display: "block" }}>Budget</span>
-                            <span style={{ fontWeight: 800, color: "#068237" }}>{proj.budget}</span>
+                          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 7 }}>
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#068237" }} />
+                            <span style={{ fontSize: 10, fontWeight: 800, color: "#068237", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                              Key Facilities & Public Impact
+                            </span>
                           </div>
-                          <div>
-                            <span style={{ fontSize: 9, color: "#9CA3AF", textTransform: "uppercase", fontWeight: 700, display: "block" }}>Agency</span>
-                            <span style={{ fontWeight: 600, color: "#374151", fontSize: 10 }}>{proj.contractor}</span>
-                          </div>
+                          <ul style={{ margin: 0, paddingLeft: 16, fontSize: 11, color: "#374151", lineHeight: 1.6 }}>
+                            {getProjectHighlights(proj).map((feat, idx) => (
+                              <li key={idx} style={{ marginBottom: 3 }}>{feat}</li>
+                            ))}
+                          </ul>
                         </div>
 
-                        {/* Source doc */}
+                        {/* Community Scope Note */}
                         <div style={{
-                          background: "#FAF7F2", borderRadius: 8, padding: "7px 10px",
-                          border: "1px solid rgba(232,168,18,0.2)", fontSize: 10,
-                          fontFamily: "monospace", color: "#6B7280", marginBottom: proj.gapNote ? 8 : 0,
+                          fontSize: 11, color: "#6B7280", background: "#FAF7F2",
+                          padding: "8px 11px", borderRadius: 8, borderLeft: "3px solid #E8A812",
+                          marginBottom: 10, lineHeight: 1.5,
                         }}>
-                          <span style={{ color: "#D49308", fontWeight: 700, display: "block", marginBottom: 2 }}>📄 Document Source:</span>
-                          {proj.sourceDocument}
+                          <strong style={{ color: "#082C20" }}>Target Community:</strong> Serving residents, pupils, and local economic clusters across <span style={{ fontWeight: 600, color: "#068237" }}>{proj.ward}</span> and surrounding areas in {proj.lgaName} Local Government Area.
                         </div>
-
-                        {proj.gapNote && (
-                          <div style={{
-                            fontSize: 10, color: "#9CA3AF", background: "#F9FAFB",
-                            padding: "6px 10px", borderRadius: 6, borderLeft: "2px solid #068237",
-                          }}>
-                            <span style={{ fontWeight: 700, color: "#6B7280" }}>Audit Status: </span>
-                            {proj.gapNote}
-                          </div>
-                        )}
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
+                          <button type="button" onClick={(event) => { event.stopPropagation(); setProofProject(proj); }} style={{ padding: "9px 10px", borderRadius: 8, border: "1px solid #D1D5DB", background: "white", color: "#082C20", fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+                            View proof
+                          </button>
+                          <a href={`/chat?q=${encodeURIComponent(`What is the current status of ${proj.title} in ${proj.lgaName}?`)}`} onClick={(event) => event.stopPropagation()} style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "9px 10px", borderRadius: 8, background: "#068237", color: "white", fontSize: 11, fontWeight: 700, textDecoration: "none" }}>
+                            Ask AskEnugu
+                          </a>
+                        </div>
                       </div>
                     );
                   })}
